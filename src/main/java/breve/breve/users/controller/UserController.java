@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -93,7 +92,23 @@ public class UserController {
     //== My Profile - 상대가 보는 내 프로필 ==//
 
 
-   //== 닉네임 등록 ==//
+    //== 닉네임 등록 ==//
+    @PostMapping("/user/nickname-post")
+    public ResponseEntity<?> nicknamePost(
+            @RequestBody String nickname,
+            Principal principal
+    ) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/user/mypage"));
+
+        userService.updateNickname(nickname, principal.getName());
+        log.info("닉네임 수정 성공!!");
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
+    }
 
 
     //== 접근 거부 페이지 ==//
