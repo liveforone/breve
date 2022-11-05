@@ -81,15 +81,15 @@ public class UserController {
     /user/logout 으로 post 하면 된다.
      */
 
-    @GetMapping("/user/mypage")  //rest-api에서는 대문자를 쓰지않는다.
-    public ResponseEntity<UserResponse> myPage(Principal principal) {
-        UserResponse dto = userService.getUser(principal.getName());
-
-        //내가 쓴 글 넣기 페이징 해서
-        return ResponseEntity.ok(dto);
-    }
-
-    //== My Profile - 상대가 보는 내 프로필 ==//
+//    @GetMapping("/user/mypage")  //rest-api에서는 대문자를 쓰지않는다.
+////    public ResponseEntity<UserResponse> myPage(Principal principal) {
+////        UserResponse dto = userService.getUser(principal.getName());
+////
+////        //내가 쓴 글 넣기 페이징 해서
+////        return ResponseEntity.ok(dto);
+////    }
+////
+////    //== My Profile - 상대가 보는 내 프로필 ==//
 
 
     //== 닉네임 등록 ==//
@@ -109,7 +109,6 @@ public class UserController {
                 .headers(httpHeaders)
                 .build();
     }
-
 
     //== 접근 거부 페이지 ==//
     @GetMapping("/user/prohibition")
