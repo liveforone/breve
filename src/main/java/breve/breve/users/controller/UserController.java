@@ -40,16 +40,24 @@ public class UserController {
     //== 회원가입 처리 ==//
     @PostMapping("/user/signup")
     public ResponseEntity<?> signup(@RequestBody UserRequest userRequest) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/"));  //해당 경로로 리다이렉트
+        int checkEmail = userService.checkSameEmail(userRequest.getEmail());
 
-        userService.joinUser(userRequest);
-        log.info("회원 가입 성공!!");
+        //중복이 아닐때
+        if (checkEmail == 1) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/"));  //해당 경로로 리다이렉트
 
-        return ResponseEntity
-                .status(HttpStatus.MOVED_PERMANENTLY)
-                .headers(httpHeaders)
-                .build();
+            userService.joinUser(userRequest);
+            log.info("회원 가입 성공!!");
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+        } else {
+            return ResponseEntity
+                    .ok("중복되는 이메일이 있어 회원가입이 불가능합니다.");
+        }
     }
 
     //== 로그인 페이지 ==//
@@ -98,16 +106,24 @@ public class UserController {
             @RequestBody String nickname,
             Principal principal
     ) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/user/mypage"));
+        int checkNickname = userService.checkSameNickname(nickname);
 
-        userService.updateNickname(nickname, principal.getName());
-        log.info("닉네임 수정 성공!!");
+        //중복이 아닐때
+        if (checkNickname == 1) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/user/mypage"));
 
-        return ResponseEntity
-                .status(HttpStatus.MOVED_PERMANENTLY)
-                .headers(httpHeaders)
-                .build();
+            userService.updateNickname(nickname, principal.getName());
+            log.info("닉네임 수정 성공!!");
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+        } else {
+            return ResponseEntity
+                    .ok("중복되는 닉네임이 있어 수정 불가능합니다.");
+        }
     }
 
     //== 접근 거부 페이지 ==//
@@ -121,7 +137,7 @@ public class UserController {
     //== 어드민 페이지 ==//
     @GetMapping("/admin")
     public ResponseEntity<?> admin(Principal principal) {
-        UserResponse dto = userService.getUser(principal.getName());
+        UserResponse dto = userService.getUserByEmail(principal.getName());
         if (dto.getAuth().equals(Role.ADMIN)) {  //권한 검증
             log.info("어드민이 어드민 페이지에 접속했습니다.");
             return ResponseEntity.ok(userService.getAllUsersForAdmin());

@@ -30,9 +30,43 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    //== entity -> dto - detail ==//
+    public UserResponse entityToDtoDetail(Users users) {
+        return UserResponse.builder()
+                .id(users.getId())
+                .email(users.getEmail())
+                .auth(users.getAuth())
+                .nickname(users.getNickname())
+                .build();
+    }
+
     //== 무작위 닉네임 생성 - 숫자 + 문자 ==//
     public String makeRandomNickname() {
         return RandomStringUtils.randomAlphanumeric(10);
+    }
+
+    //== 이메일 중복 검증 ==//
+    @Transactional(readOnly = true)
+    public int checkSameEmail(String email) {
+        Users users = userRepository.findByEmail(email);
+
+        if (users == null) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    //== 닉네임 중복 검증 ==//
+    @Transactional(readOnly = true)
+    public int checkSameNickname(String nickname) {
+        Users users = userRepository.findByNickname(nickname);
+
+        if (users == null) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     //== 회원 가입 로직 ==//
@@ -95,22 +129,22 @@ public class UserService implements UserDetailsService {
 
     //== 유저 responsedto 반환 ==//
     @Transactional(readOnly = true)
-    public UserResponse getUser(String email) {
+    public UserResponse getUserByEmail(String email) {
         Users users = userRepository.findByEmail(email);
 
-        return UserResponse.builder()
-                .id(users.getId())
-                .email(users.getEmail())
-                .auth(users.getAuth())
-                .nickname(users.getNickname())
-                .build();
-
+        return entityToDtoDetail(users);
     }
 
     //== 전체 유저 리턴 for admin ==//
     @Transactional(readOnly = true)
     public List<Users> getAllUsersForAdmin() {
         return userRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getUserByNickname(String nickname) {
+        Users users = userRepository.findByNickname(nickname);
+        return entityToDtoDetail(users);
     }
 
     @Transactional
