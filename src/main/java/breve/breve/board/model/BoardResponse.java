@@ -1,16 +1,9 @@
 package breve.breve.board.model;
 
-import breve.breve.users.model.Users;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Getter
