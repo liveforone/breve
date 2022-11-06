@@ -28,7 +28,8 @@ public class BoardResponse {
     private LocalDate createdDate;
 
     @Builder
-    public BoardResponse(String title, String content, String hashTag, String saveFileName, int view, int good, LocalDate createdDate) {
+    public BoardResponse(Long id, String title, String content, String hashTag, String saveFileName, int view, int good, LocalDate createdDate) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.hashTag = hashTag;
