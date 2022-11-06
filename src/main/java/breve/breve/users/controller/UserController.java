@@ -3,20 +3,19 @@ package breve.breve.users.controller;
 import breve.breve.users.model.Role;
 import breve.breve.users.model.UserRequest;
 import breve.breve.users.model.UserResponse;
+import breve.breve.users.model.Users;
 import breve.breve.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -124,6 +123,16 @@ public class UserController {
             return ResponseEntity
                     .ok("중복되는 닉네임이 있어 수정 불가능합니다.");
         }
+    }
+
+    //== 닉네임으로 유저 검색 ==//
+    @GetMapping("/user/search")
+    public ResponseEntity<List<UserResponse>> searchPage(
+            @RequestParam("nickname") String nickname
+    ) {
+        List<UserResponse> userList = userService.getUserListByNickName(nickname);
+
+        return ResponseEntity.ok(userList);
     }
 
     //== 접근 거부 페이지 ==//

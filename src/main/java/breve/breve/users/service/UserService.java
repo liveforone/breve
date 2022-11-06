@@ -30,7 +30,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    //== entity -> dto - detail ==//
+    //== entity -> dto1 - detail ==//
     public UserResponse entityToDtoDetail(Users users) {
         return UserResponse.builder()
                 .id(users.getId())
@@ -38,6 +38,23 @@ public class UserService implements UserDetailsService {
                 .auth(users.getAuth())
                 .nickname(users.getNickname())
                 .build();
+    }
+
+    //== entity -> dto2 - list ==//
+    public List<UserResponse> entityToDtoList(List<Users> usersList) {
+        List<UserResponse> dto = new ArrayList<>();
+
+        for (Users users : usersList) {
+            UserResponse userResponse = UserResponse.builder()
+                    .id(users.getId())
+                    .email(users.getEmail())
+                    .auth(users.getAuth())
+                    .nickname(users.getNickname())
+                    .build();
+            dto.add(userResponse);
+        }
+
+        return dto;
     }
 
     //== 무작위 닉네임 생성 - 숫자 + 문자 ==//
@@ -130,9 +147,12 @@ public class UserService implements UserDetailsService {
     //== 유저 responsedto 반환 ==//
     @Transactional(readOnly = true)
     public UserResponse getUserByEmail(String email) {
-        Users users = userRepository.findByEmail(email);
+        return entityToDtoDetail(userRepository.findByEmail(email));
+    }
 
-        return entityToDtoDetail(users);
+    @Transactional(readOnly = true)
+    public List<UserResponse> getUserListByNickName(String nickname) {
+        return entityToDtoList(userRepository.findSearchByNickName(nickname));
     }
 
     //== 전체 유저 리턴 for admin ==//
@@ -143,8 +163,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public UserResponse getUserByNickname(String nickname) {
-        Users users = userRepository.findByNickname(nickname);
-        return entityToDtoDetail(users);
+        return entityToDtoDetail(userRepository.findByNickname(nickname));
     }
 
     @Transactional

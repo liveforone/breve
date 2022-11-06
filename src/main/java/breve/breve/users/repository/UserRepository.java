@@ -7,11 +7,16 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<Users, Long> {
 
     Users findByEmail(String email);
 
     Users findByNickname(String nickname);
+
+    @Query("select u from Users u where u.nickname like %:nickname%")
+    List<Users> findSearchByNickName(@Param("nickname") String nickname);
 
     //== 권한 업데이트 ==//
     @Modifying
