@@ -55,6 +55,14 @@ public class BoardService {
                 .build();
     }
 
+    public String fileSave(MultipartFile uploadFile) throws IOException {
+        UUID uuid = UUID.randomUUID();
+        String saveFileName = uuid + "_" + uploadFile.getOriginalFilename();
+        uploadFile.transferTo(new File(saveFileName));
+
+        return saveFileName;
+    }
+
     public Page<BoardResponse> getBoardPaging(Pageable pageable) {
         return entityToDtoPage(boardRepository.findAllBoard(pageable));
     }
@@ -94,10 +102,7 @@ public class BoardService {
     public Long saveBoardFile(BoardRequest boardRequest, MultipartFile uploadFile, String writer) throws IOException {
         Users users = userRepository.findByEmail(writer);
 
-        UUID uuid = UUID.randomUUID();
-        String saveFileName = uuid + "_" + uploadFile.getOriginalFilename();
-        uploadFile.transferTo(new File(saveFileName));
-
+        String saveFileName = fileSave(uploadFile);
         boardRequest.setUsers(users);
         boardRequest.setSaveFileName(saveFileName);
 
@@ -112,5 +117,32 @@ public class BoardService {
     @Transactional
     public void updateGood(Long id) {
         boardRepository.updateGood(id);
+    }
+
+    @Transactional
+    public void editBoardFile(Long id, MultipartFile uploadFile, BoardRequest boardRequest) throws IOException {
+        Board board = boardRepository.findOneById(id);
+        String saveFileName = fileSave(uploadFile);
+
+        boardRequest.setId(board.getId());
+        boardRequest.setUsers(board.getUsers());
+        boardRequest.setGood(board.getGood());
+        boardRequest.setView(board.getView());
+        boardRequest.setSaveFileName(saveFileName);
+
+        boardRepository.save(boardRequest.toEntity());
+    }
+
+    @Transactional
+    public void editBoardNoFile(Long id, BoardRequest boardRequest) {
+        Board board = boardRepository.findOneById(id);
+
+        boardRequest.setId(board.getId());
+        boardRequest.setUsers(board.getUsers());
+        boardRequest.setGood(board.getGood());
+        boardRequest.setView(board.getView());
+        boardRequest.setSaveFileName(board.getSaveFileName());  //파일이 원래 없던지, 파일을 수정 안헀던지
+
+        boardRepository.save(boardRequest.toEntity());
     }
 }

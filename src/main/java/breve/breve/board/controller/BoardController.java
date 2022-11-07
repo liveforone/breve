@@ -1,5 +1,6 @@
 package breve.breve.board.controller;
 
+import breve.breve.board.model.Board;
 import breve.breve.board.model.BoardRequest;
 import breve.breve.board.model.BoardResponse;
 import breve.breve.board.service.BoardService;
@@ -24,6 +25,7 @@ import java.net.URI;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -173,5 +175,51 @@ public class BoardController {
                 .status(HttpStatus.MOVED_PERMANENTLY)
                 .headers(httpHeaders)
                 .build();
+    }
+
+    @GetMapping("/board/edit/{id}")
+    public ResponseEntity<BoardResponse> boardEditPage(@PathVariable("id") Long id) {
+        BoardResponse board = boardService.getBoardDetail(id);
+
+        return ResponseEntity.ok(board);
+    }
+
+    /*
+    게시글을 수정하는 조건
+    게시글 수정시 파일 있다 : 1. 없었는데 생김, 2. 있었는데 바꿈
+    게시글 수정시 파일 없다 : 1. 원래 없다, 2. 있었는데 안바꿈
+     */
+    @PostMapping("/board/edit/{id}")
+    public ResponseEntity<?> boardEdit(
+            @PathVariable("id") Long id,
+            @RequestPart MultipartFile uploadFile,
+            @RequestPart("boardRequest") BoardRequest boardRequest,
+            Principal principal
+    ) throws IllegalStateException, IOException {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/board/" + id));
+
+        String writer = boardService.getBoardEntity(id).getUsers().getEmail();
+
+        if (Objects.equals(writer, principal.getName())) {  //작성자일 때
+            if (!uploadFile.isEmpty()) {  //파일이 있다면
+                boardService.editBoardFile(id, uploadFile, boardRequest);
+                log.info("게시글 id=" + id + " 수정 완료!!");
+            } else {  //파일이 없다면
+                boardService.editBoardNoFile(id, boardRequest);
+                log.info("게시글 id=" + id + " 수정 완료!!");
+            }
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+
+        } else {
+            log.info("작성자와 현재 유저가 달라 수정 불가능.");
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
     }
 }
