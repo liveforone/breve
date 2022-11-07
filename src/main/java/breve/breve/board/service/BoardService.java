@@ -108,4 +108,9 @@ public class BoardService {
     public void updateView(Long id) {
         boardRepository.updateView(id);
     }
+
+    @Transactional
+    public void updateGood(Long id) {
+        boardRepository.updateGood(id);
+    }
 }

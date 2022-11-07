@@ -160,4 +160,18 @@ public class BoardController {
     ) throws MalformedURLException {
         return new UrlResource("file:C:\\Temp\\upload\\" + saveFileName);
     }
+
+    @PostMapping("/board/good/{id}")
+    public ResponseEntity<?> boardGood(@PathVariable("id") Long id) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/board/" + id));
+
+        boardService.updateGood(id);
+        log.info("좋아요 반영 성공!!");
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
+    }
 }
