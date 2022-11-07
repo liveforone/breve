@@ -129,6 +129,7 @@ public class BoardService {
         boardRequest.setGood(board.getGood());
         boardRequest.setView(board.getView());
         boardRequest.setSaveFileName(saveFileName);
+        boardRequest.setHashTag(board.getHashTag());
 
         boardRepository.save(boardRequest.toEntity());
     }
@@ -142,6 +143,7 @@ public class BoardService {
         boardRequest.setGood(board.getGood());
         boardRequest.setView(board.getView());
         boardRequest.setSaveFileName(board.getSaveFileName());  //파일이 원래 없던지, 파일을 수정 안헀던지
+        boardRequest.setHashTag(board.getHashTag());
 
         boardRepository.save(boardRequest.toEntity());
     }

@@ -44,6 +44,7 @@ public class Board {
     private int good;  //좋아요
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDate createdDate;
 
     @Builder
