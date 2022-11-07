@@ -1,15 +1,22 @@
 package breve.breve.board.service;
 
 import breve.breve.board.model.Board;
+import breve.breve.board.model.BoardRequest;
 import breve.breve.board.model.BoardResponse;
 import breve.breve.board.repository.BoardRepository;
+import breve.breve.users.model.Users;
+import breve.breve.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +24,7 @@ import java.time.LocalDate;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     //== entity ->  dto 편의메소드1 - 페이징 형식 ==//
     public Page<BoardResponse> entityToDtoPage(Page<Board> boardList) {
@@ -63,5 +71,41 @@ public class BoardService {
 
     public Page<BoardResponse> getBoardByHashTag(String hashTag, Pageable pageable) {
         return entityToDtoPage(boardRepository.findBoardByHashTag(hashTag, pageable));
+    }
+
+    public Board getBoardEntity(Long id) {
+        return boardRepository.findOneById(id);
+    }
+
+    public BoardResponse getBoardDetail(Long id) {
+        return entityToDtoDetail(boardRepository.findOneById(id));
+    }
+
+    @Transactional
+    public Long saveBoardNoFile(BoardRequest boardRequest, String writer) {
+        Users users = userRepository.findByEmail(writer);
+
+        boardRequest.setUsers(users);
+
+        return boardRepository.save(boardRequest.toEntity()).getId();
+    }
+
+    @Transactional
+    public Long saveBoardFile(BoardRequest boardRequest, MultipartFile uploadFile, String writer) throws IOException {
+        Users users = userRepository.findByEmail(writer);
+
+        UUID uuid = UUID.randomUUID();
+        String saveFileName = uuid + "_" + uploadFile.getOriginalFilename();
+        uploadFile.transferTo(new File(saveFileName));
+
+        boardRequest.setUsers(users);
+        boardRequest.setSaveFileName(saveFileName);
+
+        return boardRepository.save(boardRequest.toEntity()).getId();
+    }
+
+    @Transactional
+    public void updateView(Long id) {
+        boardRepository.updateView(id);
     }
 }

@@ -24,6 +24,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("select b from Board b join b.users where b.hashTag = :hashTag")
     Page<Board> findBoardByHashTag(@Param("hashTag") String hashTag, Pageable pageable);
 
+    @Query("select b from Board b join fetch b.users where b.id = :id")
+    Board findOneById(@Param("id") Long id);
+
     @Modifying
     @Query("update Board b set b.view = b.view + 1 where b.id = :id")
     void updateView(@Param("id") Long id);
