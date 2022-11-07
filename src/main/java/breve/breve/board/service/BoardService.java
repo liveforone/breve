@@ -147,4 +147,9 @@ public class BoardService {
 
         boardRepository.save(boardRequest.toEntity());
     }
+
+    @Transactional
+    public void deleteBoard(Long id) {
+        boardRepository.deleteById(id);
+    }
 }

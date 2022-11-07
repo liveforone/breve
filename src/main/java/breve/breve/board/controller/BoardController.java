@@ -222,4 +222,30 @@ public class BoardController {
                     .build();
         }
     }
+
+    @PostMapping("/board/delete/{id}")
+    public ResponseEntity<?> boardDelete(
+            @PathVariable("id") Long id,
+            Principal principal
+    ) {
+        String writer = boardService.getBoardEntity(id).getUsers().getEmail();
+        
+        if (Objects.equals(writer, principal.getName())) {
+            boardService.deleteBoard(id);
+            log.info("게시글 id=" + id + " 삭제 완료!!");
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/board/today"));
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+        } else {
+            log.info("작성자와 현재 유저가 달라 삭제 불가능.");
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
+    }
 }
