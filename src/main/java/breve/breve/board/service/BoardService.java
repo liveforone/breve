@@ -81,6 +81,10 @@ public class BoardService {
         return entityToDtoPage(boardRepository.findBoardByHashTag(hashTag, pageable));
     }
 
+    public Page<BoardResponse> getBoardByUser(String writer, Pageable pageable) {
+        return entityToDtoPage(boardRepository.findBoardByWriter(writer, pageable));
+    }
+
     public Board getBoardEntity(Long id) {
         return boardRepository.findOneById(id);
     }

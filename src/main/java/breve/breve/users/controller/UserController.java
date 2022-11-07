@@ -1,5 +1,7 @@
 package breve.breve.users.controller;
 
+import breve.breve.board.model.BoardResponse;
+import breve.breve.board.service.BoardService;
 import breve.breve.users.model.Role;
 import breve.breve.users.model.UserRequest;
 import breve.breve.users.model.UserResponse;
@@ -7,6 +9,11 @@ import breve.breve.users.model.Users;
 import breve.breve.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +32,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final BoardService boardService;
 
     //== 메인 페이지 ==//
     @GetMapping("/")
@@ -88,15 +98,25 @@ public class UserController {
     /user/logout 으로 post 하면 된다.
      */
 
-//    @GetMapping("/user/mypage")  //rest-api에서는 대문자를 쓰지않는다.
-////    public ResponseEntity<UserResponse> myPage(Principal principal) {
-////        UserResponse dto = userService.getUser(principal.getName());
-////
-////        //내가 쓴 글 넣기 페이징 해서
-////        return ResponseEntity.ok(dto);
-////    }
-////
-////    //== My Profile - 상대가 보는 내 프로필 ==//
+    @GetMapping("/user/mypage")  //rest-api에서는 대문자를 쓰지않는다.
+    public ResponseEntity<Map<String, Object>> myPage(
+            @PageableDefault(page = 0, size = 10)
+            @SortDefault.SortDefaults({
+                    @SortDefault(sort = "id", direction = Sort.Direction.DESC)
+            }) Pageable pageable,
+            Principal principal
+    ) {
+        Map<String, Object> map = new HashMap<>();
+        UserResponse dto = userService.getUserByEmail(principal.getName());
+        Page<BoardResponse> board = boardService.getBoardByUser(principal.getName(), pageable);
+
+        map.put("user", dto);
+        map.put("board", board);
+
+        return ResponseEntity.ok(map);
+    }
+
+    //== My Profile - 상대가 보는 내 프로필 ==// //닉네임으로 들고옴.
 
 
     //== 닉네임 등록 ==//
