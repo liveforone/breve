@@ -194,6 +194,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    public void updateEmail(String oldEmail, String newEmail) {
+        userRepository.updateEmail(oldEmail, newEmail);
+    }
+
+    @Transactional
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }

@@ -2,10 +2,7 @@ package breve.breve.users.controller;
 
 import breve.breve.board.model.BoardResponse;
 import breve.breve.board.service.BoardService;
-import breve.breve.users.model.Role;
-import breve.breve.users.model.UserRequest;
-import breve.breve.users.model.UserResponse;
-import breve.breve.users.model.Users;
+import breve.breve.users.model.*;
 import breve.breve.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -205,6 +202,39 @@ public class UserController {
         }
     }
 
+    //== 이메일 변경 ==//
+    @PostMapping("/user/change-email")
+    public ResponseEntity<?> changeEmail(
+            @RequestBody UserChangeEmailRequest userRequest,
+            Principal principal
+    ) {
+        Users users = userService.getUserEntity(principal.getName());
+
+        if (users != null) {
+            int checkPassword = userService.passwordDecode(userRequest.getPassword(), users.getPassword());
+
+            if (checkPassword == 1) {  //pw 일치함
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.setLocation(URI.create("/user/logout"));
+
+                userService.updateEmail(principal.getName(), userRequest.getEmail());
+                log.info("이메일 변경 성공!!");
+
+                return ResponseEntity
+                        .status(HttpStatus.MOVED_PERMANENTLY)
+                        .headers(httpHeaders)
+                        .build();
+            } else {  //pw 일치하지 않음
+                log.info("비밀번호 일치하지 않음.");
+                return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
+            }
+        } else {
+            return ResponseEntity.ok("해당 유저를 조회할 수 없어 이메일 변경이 불가능합니다.");
+        }
+    }
+
+    //== 비밀번호 변경 ==//
+
     //== 회원 탈퇴 ==//
     @PostMapping("/user/withdraw")
     public ResponseEntity<?> userWithdraw(
@@ -222,6 +252,7 @@ public class UserController {
 
                 return ResponseEntity.ok("그동안 서비스를 이용해주셔서 감사합니다.");
             } else {  //pw 일치하지 않음
+                log.info("비밀번호 일치하지 않음.");
                 return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
             }
         } else {
