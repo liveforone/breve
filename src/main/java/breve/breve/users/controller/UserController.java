@@ -5,7 +5,6 @@ import breve.breve.board.service.BoardService;
 import breve.breve.users.model.Role;
 import breve.breve.users.model.UserRequest;
 import breve.breve.users.model.UserResponse;
-import breve.breve.users.model.Users;
 import breve.breve.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,24 +98,53 @@ public class UserController {
      */
 
     @GetMapping("/user/mypage")  //rest-api에서는 대문자를 쓰지않는다.
-    public ResponseEntity<Map<String, Object>> myPage(
+    public ResponseEntity<?> myPage(
             @PageableDefault(page = 0, size = 10)
             @SortDefault.SortDefaults({
                     @SortDefault(sort = "id", direction = Sort.Direction.DESC)
             }) Pageable pageable,
             Principal principal
     ) {
-        Map<String, Object> map = new HashMap<>();
-        UserResponse dto = userService.getUserByEmail(principal.getName());
-        Page<BoardResponse> board = boardService.getBoardByUser(principal.getName(), pageable);
+        UserResponse users = userService.getUserByEmail(principal.getName());
 
-        map.put("user", dto);
-        map.put("board", board);
+        if (users != null) {
+            Map<String, Object> map = new HashMap<>();
+            Page<BoardResponse> board = boardService.getBoardByUser(principal.getName(), pageable);
 
-        return ResponseEntity.ok(map);
+            map.put("users", users);
+            map.put("board", board);
+
+            return ResponseEntity.ok(map);
+        } else {
+            return ResponseEntity.ok("해당 유저가 없어 조회할 수 없습니다.");
+        }
+
     }
 
-    //== My Profile - 상대가 보는 내 프로필 ==// //닉네임으로 들고옴.
+    //== Profile - 상대가 보는 내 프로필 ==// 닉네임으로 들고옴.
+    @GetMapping("/user/profile/{nickname}")
+    public ResponseEntity<?> ProfilePage(
+            @PageableDefault(page = 0, size = 10)
+            @SortDefault.SortDefaults({
+                    @SortDefault(sort = "id", direction = Sort.Direction.DESC)
+            }) Pageable pageable,
+            @PathVariable("nickname") String nickname
+    ) {
+        UserResponse users = userService.getUserByNickname(nickname);
+
+        if (users != null) {
+            Map<String, Object> map = new HashMap<>();
+            Page<BoardResponse> board = boardService.getBoardByNickname(nickname, pageable);
+
+            map.put("users", users);
+            map.put("board", board);
+
+            return ResponseEntity.ok(map);
+        } else {
+            return ResponseEntity.ok("해당 유저가 없어 조회할 수 없습니다.");
+        }
+
+    }
 
 
     //== 닉네임 등록 ==//

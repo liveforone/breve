@@ -32,12 +32,17 @@ public class UserService implements UserDetailsService {
 
     //== entity -> dto1 - detail ==//
     public UserResponse entityToDtoDetail(Users users) {
-        return UserResponse.builder()
-                .id(users.getId())
-                .email(users.getEmail())
-                .auth(users.getAuth())
-                .nickname(users.getNickname())
-                .build();
+
+        if (users != null) {
+            return UserResponse.builder()
+                    .id(users.getId())
+                    .email(users.getEmail())
+                    .auth(users.getAuth())
+                    .nickname(users.getNickname())
+                    .build();
+        } else {
+            return null;
+        }
     }
 
     //== entity -> dto2 - list ==//

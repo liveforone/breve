@@ -43,16 +43,21 @@ public class BoardService {
 
     //== entity -> dto 편의메소드2 - 엔티티 하나 ==//
     public BoardResponse entityToDtoDetail(Board board) {
-        return BoardResponse.builder()
-                .id(board.getId())
-                .title(board.getTitle())
-                .content(board.getContent())
-                .hashTag(board.getHashTag())
-                .saveFileName(board.getSaveFileName())
-                .view(board.getView())
-                .good(board.getGood())
-                .createdDate(board.getCreatedDate())
-                .build();
+
+        if (board != null) {
+            return BoardResponse.builder()
+                    .id(board.getId())
+                    .title(board.getTitle())
+                    .content(board.getContent())
+                    .hashTag(board.getHashTag())
+                    .saveFileName(board.getSaveFileName())
+                    .view(board.getView())
+                    .good(board.getGood())
+                    .createdDate(board.getCreatedDate())
+                    .build();
+        } else {
+            return null;
+        }
     }
 
     public String fileSave(MultipartFile uploadFile) throws IOException {
@@ -83,6 +88,10 @@ public class BoardService {
 
     public Page<BoardResponse> getBoardByUser(String writer, Pageable pageable) {
         return entityToDtoPage(boardRepository.findBoardByWriter(writer, pageable));
+    }
+
+    public Page<BoardResponse> getBoardByNickname(String nickname, Pageable pageable) {
+        return entityToDtoPage(boardRepository.findBoardByNickname(nickname, pageable));
     }
 
     public Board getBoardEntity(Long id) {

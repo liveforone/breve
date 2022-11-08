@@ -27,6 +27,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("select b from Board b join b.users u where u.email = :email")
     Page<Board> findBoardByWriter(@Param("email") String email, Pageable pageable);
 
+    @Query("select b from Board b join b.users u where u.nickname = :nickname")
+    Page<Board> findBoardByNickname(@Param("nickname") String nickname, Pageable pageable);
+
     @Query("select b from Board b join fetch b.users where b.id = :id")
     Board findOneById(@Param("id") Long id);
 

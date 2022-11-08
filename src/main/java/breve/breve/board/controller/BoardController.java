@@ -135,23 +135,28 @@ public class BoardController {
     작성자 검증은 이메일로 해도 상관없음.
      */
     @GetMapping("/board/{id}")
-    public ResponseEntity<Map<String, Object>> boardDetail(
+    public ResponseEntity<?> boardDetail(
             @PathVariable("id") Long id,
             Principal principal
     ) {
-        Map<String, Object> map = new HashMap<>();
-        String user = principal.getName();
-        String writer = boardService.getBoardEntity(id).getUsers().getEmail();
         BoardResponse board = boardService.getBoardDetail(id);
 
-        map.put("user", user);
-        map.put("writer", writer);
-        map.put("body", board);
+        if (board != null) {
+            Map<String, Object> map = new HashMap<>();
+            String user = principal.getName();
+            String writer = boardService.getBoardEntity(id).getUsers().getEmail();
 
-        boardService.updateView(id);
-        log.info("조회수 +1 성공!!");
+            map.put("user", user);
+            map.put("writer", writer);
+            map.put("body", board);
 
-        return ResponseEntity.ok(map);
+            boardService.updateView(id);
+            log.info("조회수 +1 성공!!");
+
+            return ResponseEntity.ok(map);
+        } else {
+            return ResponseEntity.ok("해당 게시글이 없어 조회할 수 없습니다.");
+        }
     }
 
     //== 상품 상세조회 이미지 ==//
@@ -178,10 +183,10 @@ public class BoardController {
     }
 
     @GetMapping("/board/edit/{id}")
-    public ResponseEntity<BoardResponse> boardEditPage(@PathVariable("id") Long id) {
+    public ResponseEntity<?> boardEditPage(@PathVariable("id") Long id) {
         BoardResponse board = boardService.getBoardDetail(id);
 
-        return ResponseEntity.ok(board);
+        return ResponseEntity.ok(Objects.requireNonNullElse(board, "해당 게시글이 없어조회할 수 없습니다."));
     }
 
     /*
