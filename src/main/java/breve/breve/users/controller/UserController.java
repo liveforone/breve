@@ -5,6 +5,7 @@ import breve.breve.board.service.BoardService;
 import breve.breve.users.model.Role;
 import breve.breve.users.model.UserRequest;
 import breve.breve.users.model.UserResponse;
+import breve.breve.users.model.Users;
 import breve.breve.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -92,10 +94,20 @@ public class UserController {
                 .build();
     }
 
+    //== 로그아웃 ==//
     /*
     로그아웃은 시큐리티 단에서 이루어짐.
-    /user/logout 으로 post 하면 된다.
+    url : /user/logout
+    method : POST
      */
+
+    //== 접근 거부 페이지 ==//
+    @GetMapping("/user/prohibition")
+    public ResponseEntity<?> prohibition() {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("접근 권한이 없습니다.");
+    }
 
     @GetMapping("/user/mypage")  //rest-api에서는 대문자를 쓰지않는다.
     public ResponseEntity<?> myPage(
@@ -118,7 +130,6 @@ public class UserController {
         } else {
             return ResponseEntity.ok("해당 유저가 없어 조회할 수 없습니다.");
         }
-
     }
 
     //== Profile - 상대가 보는 내 프로필 ==// 닉네임으로 들고옴.
@@ -143,9 +154,7 @@ public class UserController {
         } else {
             return ResponseEntity.ok("해당 유저가 없어 조회할 수 없습니다.");
         }
-
     }
-
 
     //== 닉네임 등록 ==//
     @PostMapping("/user/nickname-post")
@@ -183,14 +192,6 @@ public class UserController {
         return ResponseEntity.ok(userList);
     }
 
-    //== 접근 거부 페이지 ==//
-    @GetMapping("/user/prohibition")
-    public ResponseEntity<?> prohibition() {
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body("접근 권한이 없습니다.");
-    }
-
     //== 어드민 페이지 ==//
     @GetMapping("/admin")
     public ResponseEntity<?> admin(Principal principal) {
@@ -201,6 +202,30 @@ public class UserController {
         } else {
             log.info("어드민 페이지 접속에 실패했습니다.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    //== 회원 탈퇴 ==//
+    @PostMapping("/user/withdraw")
+    public ResponseEntity<?> userWithdraw(
+            @RequestBody String password,
+            Principal principal
+    ) {
+        Users users = userService.getUserEntity(principal.getName());
+
+        if (users != null) {
+            int checkPassword = userService.passwordDecode(password, users.getPassword());
+
+            if (checkPassword == 1) { //pw 일치함
+                log.info("회원 : " + users.getId() + " 탈퇴 성공!!");
+                userService.deleteUser(users.getId());
+
+                return ResponseEntity.ok("그동안 서비스를 이용해주셔서 감사합니다.");
+            } else {  //pw 일치하지 않음
+                return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
+            }
+        } else {
+            return ResponseEntity.ok("해당 유저를 조회할 수 없어 탈퇴가 불가능합니다.");
         }
     }
 }

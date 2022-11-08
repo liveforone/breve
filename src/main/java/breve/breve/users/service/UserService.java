@@ -91,6 +91,17 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    //== 비밀번호 복호화 ==//
+    public int passwordDecode(String inputPassword, String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if(encoder.matches(inputPassword, password)) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     //== 회원 가입 로직 ==//
     @Transactional
     public Long joinUser(UserRequest userRequest) {
@@ -149,6 +160,12 @@ public class UserService implements UserDetailsService {
         return new User(users.getEmail(), users.getPassword(), authorities);
     }
 
+    //== 유저 엔티티 반환 ==//
+    @Transactional(readOnly = true)
+    public Users getUserEntity(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     //== 유저 responsedto 반환 ==//
     @Transactional(readOnly = true)
     public UserResponse getUserByEmail(String email) {
@@ -174,5 +191,10 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void updateNickname(String nickname, String email) {
         userRepository.updateNickname(nickname, email);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
     }
 }
