@@ -25,6 +25,7 @@
 * 팔로잉 팔로우 시스템은 한개의 테이블로 모두 처리하기.
 * 게시글 작성시 사진을 넣어도 되고 안넣어도 된다.
 * 다만 사진 갯수는 1개 이하로 제한하고, 글자수는 300자로 제한한다.
+* 댓글은 글자수 100자로 제한한다.
 * 검색은 사용자검색(닉네임), 게시글 검색 두종류가 있다.
 * 게시글 홈(기본피드)는 오늘 작성된 게시글들을 가져온다.(createdDate로 체크해서)
 * 해쉬태그를 만들어서 해쉬태그로 검색가능하다.
@@ -76,6 +77,12 @@
 } + uploadFile에 파일 뺴고 post 하기.(uploadFile이 없으면 에러뜸.)
 ```
 ### comment
+```
+{
+    "content" : "this is comment1"
+}
+updated comment - text raw, edit
+```
 
 ## API 설계
 ### users
@@ -86,12 +93,22 @@
 * /user/mypage - get
 * /user/profile/{nickname} - get
 * /user/nickname-post - post
-* /user/search - get, param : nickname
+* /user/search - get, param : string nickname
 * /admin - get, auth : admin
 * /user/change-email - post
 * /user/change-password - post
 * /user/withdraw - post, body : string password
 ### board
+* /board/today - get
+* /board/best - get
+* /board/search - get, param : string keyword
+* /board/hashtag/{hashtag} - get
+* /board/post - get/post
+* /board/{id} - get
+* /board/image/{saveFileName} - get, file
+* /board/good/{id} - post
+* /board/edit/{id} - get/post
+* /board/delete/{id} - post
 ### comment
 ### follow
 
@@ -181,6 +198,12 @@ https://cantcoding.tistory.com/m/52
 회원탈퇴 문서작성(뷰에서 검증 끝남)
 비밀번호 복호화 문서작성하기
 id & pw 변경 문서작성
+
+연관관계 문서작성
+
+- 코드 할일
+팔로잉 
+북마크
 
 북마크 기능추가하기 팔로잉과 비슥하게 연관관계 필드만 존재할것같음.
 북마크는 삭제하면 아예 삭제시켜버림
