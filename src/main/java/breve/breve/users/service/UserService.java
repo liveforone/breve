@@ -199,8 +199,12 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updatePassword(String oldPassword, String newPassword) {
-        userRepository.updatePassword(oldPassword, newPassword);
+    public void updatePassword(Long id, String inputPassword) {
+        //pw 암호화
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String newPassword =  passwordEncoder.encode(inputPassword);
+        
+        userRepository.updatePassword(id, newPassword);
     }
 
     @Transactional

@@ -82,19 +82,25 @@ public class UserController {
             @RequestBody UserRequest userRequest,
             HttpSession session
     ) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/"));
+        Users users = userService.getUserEntity(userRequest.getEmail());
+        int checkPassword = userService.passwordDecode(userRequest.getPassword(), users.getPassword());
 
-        userService.login(userRequest, session);
-        log.info("로그인 성공!");
+        if (checkPassword == 1) {  //pw 일치함
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/"));
 
-        return ResponseEntity
-                .status(HttpStatus.MOVED_PERMANENTLY)
-                .headers(httpHeaders)
-                .build();
+            userService.login(userRequest, session);
+            log.info("로그인 성공!");
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+        } else {  //pw 일치하지 않음
+            return ResponseEntity.ok("비밀번호가 일치하지 않습니다.");
+        }
     }
 
-    //== 로그아웃 ==//
     /*
     로그아웃은 시큐리티 단에서 이루어짐.
     url : /user/logout
@@ -217,7 +223,7 @@ public class UserController {
         if (users != null) {
             int checkPassword = userService.passwordDecode(userRequest.getPassword(), users.getPassword());
 
-            if (changeEmail != null) {  //이메일 중복안됨
+            if (changeEmail == null) {  //이메일 중복안됨
 
                 if (checkPassword == 1) {  //pw 일치함
                     HttpHeaders httpHeaders = new HttpHeaders();
@@ -259,7 +265,7 @@ public class UserController {
                 HttpHeaders httpHeaders = new HttpHeaders();
                 httpHeaders.setLocation(URI.create("/user/logout"));
 
-                userService.updatePassword(userRequest.getOldPassword(), userRequest.getNewPassword());
+                userService.updatePassword(users.getId(), userRequest.getNewPassword());
                 log.info("비밀번호 변경 성공!!");
 
                 return ResponseEntity
