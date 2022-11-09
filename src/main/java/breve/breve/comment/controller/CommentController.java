@@ -60,7 +60,7 @@ public class CommentController {
 
         if (board != null) {
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/comment/" + board));
+            httpHeaders.setLocation(URI.create("/comment/" + boardId));
 
             commentService.saveComment(commentRequest, principal.getName(), boardId);
             log.info("댓글 저장 성공!!");
@@ -104,7 +104,7 @@ public class CommentController {
                     .headers(httpHeaders)
                     .build();
         } else {
-            return ResponseEntity.ok("댓글 작성자와 회원님이 달라 수정할 수 없습니다.");
+            return ResponseEntity.ok("회원님이 댓글 작성자와 달라 수정할 수 없습니다.");
         }
     }
 }
