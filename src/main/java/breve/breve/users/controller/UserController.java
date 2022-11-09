@@ -201,8 +201,9 @@ public class UserController {
     //== 어드민 페이지 ==//
     @GetMapping("/admin")
     public ResponseEntity<?> admin(Principal principal) {
-        UserResponse dto = userService.getUserByEmail(principal.getName());
-        if (dto.getAuth().equals(Role.ADMIN)) {  //권한 검증
+        Users users = userService.getUserEntity(principal.getName());
+
+        if (users.getAuth().equals(Role.ADMIN)) {  //권한 검증
             log.info("어드민이 어드민 페이지에 접속했습니다.");
             return ResponseEntity.ok(userService.getAllUsersForAdmin());
         } else {

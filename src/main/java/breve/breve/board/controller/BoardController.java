@@ -2,6 +2,7 @@ package breve.breve.board.controller;
 
 import breve.breve.board.dto.BoardRequest;
 import breve.breve.board.dto.BoardResponse;
+import breve.breve.board.model.Board;
 import breve.breve.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -169,16 +170,22 @@ public class BoardController {
 
     @PostMapping("/board/good/{id}")
     public ResponseEntity<?> boardGood(@PathVariable("id") Long id) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/board/" + id));
+        Board board = boardService.getBoardEntity(id);
 
-        boardService.updateGood(id);
-        log.info("좋아요 반영 성공!!");
+        if (board != null) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/board/" + id));
 
-        return ResponseEntity
-                .status(HttpStatus.MOVED_PERMANENTLY)
-                .headers(httpHeaders)
-                .build();
+            boardService.updateGood(id);
+            log.info("좋아요 반영 성공!!");
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+        } else {
+            return ResponseEntity.ok("게시글이 존재하지 않아 좋아요가 불가능합니다.");
+        }
     }
 
     @GetMapping("/board/edit/{id}")
