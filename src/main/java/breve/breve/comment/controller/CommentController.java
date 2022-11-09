@@ -1,6 +1,7 @@
 package breve.breve.comment.controller;
 
 import breve.breve.board.dto.BoardResponse;
+import breve.breve.board.model.Board;
 import breve.breve.board.service.BoardService;
 import breve.breve.comment.dto.CommentRequest;
 import breve.breve.comment.dto.CommentResponse;
@@ -56,7 +57,7 @@ public class CommentController {
             @RequestBody CommentRequest commentRequest,
             Principal principal
             ) {
-        BoardResponse board = boardService.getBoardDetail(boardId);
+        Board board = boardService.getBoardEntity(boardId);
 
         if (board != null) {
             HttpHeaders httpHeaders = new HttpHeaders();
@@ -125,6 +126,37 @@ public class CommentController {
                     .build();
         } else {
             return ResponseEntity.ok("해당 댓글이 없어 좋아요 반영이 불가능합니다.");
+        }
+    }
+
+    @PostMapping("/comment/delete/{id}")
+    public ResponseEntity<?> commentDelete(
+            @PathVariable("id") Long id,
+            Principal principal
+    ) {
+        Comment comment = commentService.getCommentEntity(id);
+
+        if (comment != null) {
+
+            if (Objects.equals(comment.getWriter(), principal.getName())) {
+                Long boardId = comment.getBoard().getId();
+
+                commentService.deleteComment(id);
+                log.info("댓글 삭제완료 !!");
+
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.setLocation(URI.create("/comment/" + boardId));
+
+                return ResponseEntity
+                        .status(HttpStatus.MOVED_PERMANENTLY)
+                        .headers(httpHeaders)
+                        .build();
+            } else {
+                return ResponseEntity.ok("회원님과 작성자가 서로 달라 댓글 삭제가 불가능합니다.");
+            }
+
+        } else {
+            return ResponseEntity.ok("해당 게시글이 없어 삭제가 불가능합니다.");
         }
     }
 }

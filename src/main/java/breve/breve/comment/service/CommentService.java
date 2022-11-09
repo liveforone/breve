@@ -78,4 +78,9 @@ public class CommentService {
     public void updateGood(Long id) {
         commentRepository.updateGood(id);
     }
+
+    @Transactional
+    public void deleteComment(Long id) {
+        commentRepository.deleteById(id);
+    }
 }
