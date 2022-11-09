@@ -1,4 +1,4 @@
-package breve.breve.users.model;
+package breve.breve.users.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

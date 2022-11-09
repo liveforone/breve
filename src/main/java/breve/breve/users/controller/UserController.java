@@ -1,7 +1,10 @@
 package breve.breve.users.controller;
 
-import breve.breve.board.model.BoardResponse;
+import breve.breve.board.dto.BoardResponse;
 import breve.breve.board.service.BoardService;
+import breve.breve.users.dto.UserChangeEmailRequest;
+import breve.breve.users.dto.UserRequest;
+import breve.breve.users.dto.UserResponse;
 import breve.breve.users.model.*;
 import breve.breve.users.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +25,6 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor

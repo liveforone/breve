@@ -1,5 +1,6 @@
-package breve.breve.board.model;
+package breve.breve.board.dto;
 
+import breve.breve.board.model.Board;
 import breve.breve.users.model.Users;
 import lombok.Data;
 import lombok.NoArgsConstructor;

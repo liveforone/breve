@@ -1,4 +1,4 @@
-package breve.breve.board.model;
+package breve.breve.board.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

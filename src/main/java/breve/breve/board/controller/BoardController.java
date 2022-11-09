@@ -1,8 +1,7 @@
 package breve.breve.board.controller;
 
-import breve.breve.board.model.Board;
-import breve.breve.board.model.BoardRequest;
-import breve.breve.board.model.BoardResponse;
+import breve.breve.board.dto.BoardRequest;
+import breve.breve.board.dto.BoardResponse;
 import breve.breve.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

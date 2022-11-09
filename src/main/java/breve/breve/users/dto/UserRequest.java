@@ -1,5 +1,7 @@
-package breve.breve.users.model;
+package breve.breve.users.dto;
 
+import breve.breve.users.model.Role;
+import breve.breve.users.model.Users;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

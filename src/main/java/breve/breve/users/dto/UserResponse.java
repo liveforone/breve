@@ -1,5 +1,6 @@
-package breve.breve.users.model;
+package breve.breve.users.dto;
 
+import breve.breve.users.model.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;

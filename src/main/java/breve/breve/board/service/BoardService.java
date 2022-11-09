@@ -1,8 +1,8 @@
 package breve.breve.board.service;
 
 import breve.breve.board.model.Board;
-import breve.breve.board.model.BoardRequest;
-import breve.breve.board.model.BoardResponse;
+import breve.breve.board.dto.BoardRequest;
+import breve.breve.board.dto.BoardResponse;
 import breve.breve.board.repository.BoardRepository;
 import breve.breve.users.model.Users;
 import breve.breve.users.repository.UserRepository;

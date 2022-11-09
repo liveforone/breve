@@ -1,8 +1,8 @@
 package breve.breve.users.service;
 
 import breve.breve.users.model.Role;
-import breve.breve.users.model.UserRequest;
-import breve.breve.users.model.UserResponse;
+import breve.breve.users.dto.UserRequest;
+import breve.breve.users.dto.UserResponse;
 import breve.breve.users.model.Users;
 import breve.breve.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
