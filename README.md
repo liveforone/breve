@@ -79,6 +79,18 @@
 
 ## API 설계
 ### users
+* / - get
+* /user/signup - get/post
+* /user/login - get/post
+* /user/prohibition - get
+* /user/mypage - get
+* /user/profile/{nickname} - get
+* /user/nickname-post - post
+* /user/search - get, param : nickname
+* /admin - get, auth : admin
+* /user/change-email - post
+* /user/change-password - post
+* /user/withdraw - post, body : string password
 ### board
 ### comment
 ### follow
