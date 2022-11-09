@@ -206,6 +206,7 @@ public class BoardController {
         String writer = boardService.getBoardEntity(id).getUsers().getEmail();
 
         if (Objects.equals(writer, principal.getName())) {  //작성자일 때
+
             if (!uploadFile.isEmpty()) {  //파일이 있다면
                 boardService.editBoardFile(id, uploadFile, boardRequest);
                 log.info("게시글 id=" + id + " 수정 완료!!");

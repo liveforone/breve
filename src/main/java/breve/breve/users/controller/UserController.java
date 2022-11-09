@@ -230,6 +230,7 @@ public class UserController {
                 log.info("비밀번호 일치하지 않음.");
                 return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
             }
+
         } else {
             return ResponseEntity.ok("해당 유저를 조회할 수 없어 이메일 변경이 불가능합니다.");
         }
@@ -257,6 +258,7 @@ public class UserController {
                 log.info("비밀번호 일치하지 않음.");
                 return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
             }
+
         } else {
             return ResponseEntity.ok("해당 유저를 조회할 수 없어 탈퇴가 불가능합니다.");
         }
