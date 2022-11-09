@@ -251,7 +251,7 @@ public class UserController {
     }
 
     //== 비밀번호 변경 ==//
-    @PostMapping("user/change-password")
+    @PostMapping("/user/change-password")
     public ResponseEntity<?> changePassword(
             @RequestBody UserChangePasswordRequest userRequest,
             Principal principal
