@@ -199,6 +199,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    public void updatePassword(String oldPassword, String newPassword) {
+        userRepository.updatePassword(oldPassword, newPassword);
+    }
+
+    @Transactional
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }

@@ -3,6 +3,7 @@ package breve.breve.users.controller;
 import breve.breve.board.dto.BoardResponse;
 import breve.breve.board.service.BoardService;
 import breve.breve.users.dto.UserChangeEmailRequest;
+import breve.breve.users.dto.UserChangePasswordRequest;
 import breve.breve.users.dto.UserRequest;
 import breve.breve.users.dto.UserResponse;
 import breve.breve.users.model.*;
@@ -211,16 +212,55 @@ public class UserController {
             Principal principal
     ) {
         Users users = userService.getUserEntity(principal.getName());
+        UserResponse changeEmail = userService.getUserByEmail(userRequest.getEmail());
 
         if (users != null) {
             int checkPassword = userService.passwordDecode(userRequest.getPassword(), users.getPassword());
+
+            if (changeEmail != null) {  //이메일 중복안됨
+
+                if (checkPassword == 1) {  //pw 일치함
+                    HttpHeaders httpHeaders = new HttpHeaders();
+                    httpHeaders.setLocation(URI.create("/user/logout"));
+
+                    userService.updateEmail(principal.getName(), userRequest.getEmail());
+                    log.info("이메일 변경 성공!!");
+
+                    return ResponseEntity
+                            .status(HttpStatus.MOVED_PERMANENTLY)
+                            .headers(httpHeaders)
+                            .build();
+                } else {  //pw 일치하지 않음
+                    log.info("비밀번호 일치하지 않음.");
+                    return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
+                }
+
+            } else {  //이메일 중복됨
+                return ResponseEntity.ok("해당 이메일이 이미 존재합니다. 다시 입력해주세요");
+            }
+
+        } else {
+            return ResponseEntity.ok("해당 유저를 조회할 수 없어 이메일 변경이 불가능합니다.");
+        }
+    }
+
+    //== 비밀번호 변경 ==//
+    @PostMapping("user/change-password")
+    public ResponseEntity<?> changePassword(
+            @RequestBody UserChangePasswordRequest userRequest,
+            Principal principal
+            ) {
+        Users users = userService.getUserEntity(principal.getName());
+
+        if (users != null) {
+            int checkPassword = userService.passwordDecode(userRequest.getOldPassword(), users.getPassword());
 
             if (checkPassword == 1) {  //pw 일치함
                 HttpHeaders httpHeaders = new HttpHeaders();
                 httpHeaders.setLocation(URI.create("/user/logout"));
 
-                userService.updateEmail(principal.getName(), userRequest.getEmail());
-                log.info("이메일 변경 성공!!");
+                userService.updatePassword(userRequest.getOldPassword(), userRequest.getNewPassword());
+                log.info("비밀번호 변경 성공!!");
 
                 return ResponseEntity
                         .status(HttpStatus.MOVED_PERMANENTLY)
@@ -232,11 +272,9 @@ public class UserController {
             }
 
         } else {
-            return ResponseEntity.ok("해당 유저를 조회할 수 없어 이메일 변경이 불가능합니다.");
+            return ResponseEntity.ok("해당 유저를 조회할 수 없어 비밀번호 변경이 불가능합니다.");
         }
     }
-
-    //== 비밀번호 변경 ==//
 
     //== 회원 탈퇴 ==//
     @PostMapping("/user/withdraw")
