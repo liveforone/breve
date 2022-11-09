@@ -73,4 +73,9 @@ public class CommentService {
     public void editComment(String content, Long id) {
         commentRepository.updateComment(content, id);
     }
+
+    @Transactional
+    public void updateGood(Long id) {
+        commentRepository.updateGood(id);
+    }
 }

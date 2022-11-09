@@ -107,4 +107,24 @@ public class CommentController {
             return ResponseEntity.ok("회원님이 댓글 작성자와 달라 수정할 수 없습니다.");
         }
     }
+
+    @PostMapping("/comment/good/{id}")
+    public ResponseEntity<?> commentUpdateGood(@PathVariable("id") Long id) {
+        Comment comment = commentService.getCommentEntity(id);
+
+        if (comment != null) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/comment/" + comment.getBoard().getId()));
+
+            commentService.updateGood(id);
+            log.info("댓글 좋아요 업데이트 성공!!");
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+        } else {
+            return ResponseEntity.ok("해당 댓글이 없어 좋아요 반영이 불가능합니다.");
+        }
+    }
 }

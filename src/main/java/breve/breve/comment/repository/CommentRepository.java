@@ -19,4 +19,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Query("update Comment c set c.content = :content where c.id = :id")
     void updateComment(@Param("content") String content, @Param("id") Long id);
+
+    @Modifying
+    @Query("update Comment c set c.good = c.good + 1 where c.id = :id")
+    void updateGood(@Param("id") Long id);
 }
