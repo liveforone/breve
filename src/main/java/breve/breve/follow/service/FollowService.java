@@ -19,12 +19,49 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
+    //== 내가 팔로우하는 사람들 ==//
     public List<String> getMyFollowList(String email) {
         List<Follow> followList = followRepository.findByFollower(email);
         List<String> list = new ArrayList<>();
 
         for (Follow follow : followList) {
             list.add(follow.getUsers().getNickname());
+        }
+
+        return list;
+    }
+
+    //== 나를 팔로우하는 사람들 ==//
+    public List<String> getMyFollowerList(String email) {
+        List<Follow> followerList = followRepository.findByUsers(email);
+        List<String> list = new ArrayList<>();
+
+        for (Follow follow : followerList) {
+            list.add(follow.getFollower().getNickname());
+        }
+
+        return list;
+    }
+
+    //== 프로필 - 프로필 주인이 팔로우하는 사람들 ==//
+    public List<String> getProfileFollowList(String nickname) {
+        List<Follow> followList = followRepository.findByFollowerNickname(nickname);
+        List<String> list = new ArrayList<>();
+
+        for (Follow follow : followList) {
+            list.add(follow.getUsers().getNickname());
+        }
+
+        return list;
+    }
+
+    //== 프로필 - 프로필 주인을 팔로우하는 사람들 ==//
+    public List<String> getProfileFollowerList(String nickname) {
+        List<Follow> followerList = followRepository.findByUsersNickname(nickname);
+        List<String> list = new ArrayList<>();
+
+        for (Follow follow : followerList) {
+            list.add(follow.getFollower().getNickname());
         }
 
         return list;
@@ -41,5 +78,14 @@ public class FollowService {
                 .build();
 
         followRepository.save(follow);
+    }
+
+    @Transactional
+    public void unfollow(String follower, String users) {
+        Users user_me = userRepository.findByEmail(follower);  //나
+        Users user_follow = userRepository.findByNickname(users);  //내가 팔로우하는 사람
+
+        Follow follow = followRepository.findByFollowerAndUsers(user_me, user_follow);
+        followRepository.deleteById(follow.getId());
     }
 }
