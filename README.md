@@ -110,7 +110,18 @@ updated comment - text raw, edit
 * /board/edit/{id} - get/post
 * /board/delete/{id} - post
 ### comment
+* /comment/{boardId} - get
+* /comment/post/{boardId} - post
+* /comment/edit/{id} - get/post
+* /comment/good/{id} - post
+* /comment/delete/{id} - post
 ### follow
+* /follow/{nickname} - post
+* /unfollow/{nickname} - post
+* /follow/my-follow - get
+* /follow/my-follower - get
+* /follow/profile-follow/{nickname} - get
+* /follow/profile-follower/{nickname} - get
 
 # 3. 상세설명
 ## 게시판별 정렬 기준
@@ -198,6 +209,8 @@ https://cantcoding.tistory.com/m/52
 회원탈퇴 문서작성(뷰에서 검증 끝남)
 비밀번호 복호화 문서작성하기
 id & pw 변경 문서작성
+팔로잉 문서작성(팔로우하는 구조 자세히 !! 상당히 복잡하고 어려움..)
+팔로잉 문서작성시 쿼리 and절과 엔티티 자체를 파라미터로 넘겨주어야하는것 작성
 
 연관관계 문서작성
 
