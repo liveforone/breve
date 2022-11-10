@@ -13,7 +13,8 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     Users findByEmail(String email);
 
-    Users findByNickname(String nickname);
+    @Query("select u from Users u where u.nickname = :nickname")
+    Users findByNickname(@Param("nickname") String nickname);
 
     @Query("select u from Users u where u.nickname like %:nickname%")
     List<Users> findSearchByNickName(@Param("nickname") String nickname);
