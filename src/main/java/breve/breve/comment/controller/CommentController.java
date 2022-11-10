@@ -1,6 +1,5 @@
 package breve.breve.comment.controller;
 
-import breve.breve.board.dto.BoardResponse;
 import breve.breve.board.model.Board;
 import breve.breve.board.service.BoardService;
 import breve.breve.comment.dto.CommentRequest;
