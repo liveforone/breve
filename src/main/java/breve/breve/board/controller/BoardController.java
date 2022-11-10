@@ -144,10 +144,12 @@ public class BoardController {
         if (board != null) {
             Map<String, Object> map = new HashMap<>();
             String user = principal.getName();
-            String writer = boardService.getBoardEntity(id).getUsers().getEmail();
+            String writerEmail = boardService.getBoardEntity(id).getUsers().getEmail();  //작성자 검증시 사용
+            String writerNickname = boardService.getBoardEntity(id).getUsers().getNickname();
 
             map.put("user", user);
-            map.put("writer", writer);
+            map.put("writerEmail", writerEmail);
+            map.put("writerNickname", writerNickname);
             map.put("body", board);
 
             boardService.updateView(id);
