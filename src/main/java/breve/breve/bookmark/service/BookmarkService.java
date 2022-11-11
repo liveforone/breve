@@ -62,8 +62,10 @@ public class BookmarkService {
     public void bookmarkCancel(String email, Long boardId) {
         Users users = userRepository.findByEmail(email);
         Board board = boardRepository.findOneById(boardId);
-
         Bookmark bookmark = bookmarkRepository.findUsersAndBoard(users, board);
-        bookmarkRepository.deleteById(bookmark.getId());
+
+        if (bookmark != null) {
+            bookmarkRepository.deleteById(bookmark.getId());
+        }
     }
 }

@@ -32,7 +32,7 @@ public class BookmarkController {
         return ResponseEntity.ok(bookmarkList);
     }
 
-    @PostMapping("/bookmark/{boardId}")
+    @PostMapping("/bookmark/post/{boardId}")
     public ResponseEntity<?> bookmarking(
             @PathVariable("boardId") Long boardId,
             Principal principal
@@ -55,7 +55,7 @@ public class BookmarkController {
         }
     }
 
-    @PostMapping("/bookmark-cancel/{boardId}")
+    @PostMapping("/bookmark/cancel/{boardId}")
     public ResponseEntity<?> bookmarkCancel(
             @PathVariable("boardId") Long boardId,
             Principal principal
