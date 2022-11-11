@@ -30,6 +30,7 @@
 * 게시글 홈(기본피드)는 오늘 작성된 게시글들을 가져온다.(createdDate로 체크해서)
 * 해쉬태그를 만들어서 해쉬태그로 검색가능하다.
 * 회원탈퇴, id & pw 변경 가능.
+* 모든 과정에서 null을 체크하여 run time error를 방지한다.
 
 ## ERD Diagram 설계
 
@@ -122,6 +123,10 @@ updated comment - text raw, edit
 * /follow/my-follower - get
 * /follow/profile-follow/{nickname} - get
 * /follow/profile-follower/{nickname} - get
+### bookmark
+* /my-bookmark - get
+* /bookmark/post/{boardId} - post
+* /bookmark/cancel/{boardId} - post
 
 # 3. 상세설명
 ## 게시판별 정렬 기준
@@ -210,13 +215,5 @@ updated comment - text raw, edit
 id & pw 변경 문서작성
 팔로잉 문서작성(팔로우하는 구조 자세히 !! 상당히 복잡하고 어려움..)
 팔로잉 문서작성시 쿼리 and절과 엔티티 자체를 파라미터로 넘겨주어야하는것 작성
-
-- 코드 할일
-북마크
-
-북마크 기능추가하기 팔로잉과 비슥하게 연관관계 필드만 존재할것같음.
-북마크는 삭제하면 아예 삭제시켜버림
-enum으로 status 걸 필요가 없음
-특정 값만 받는 dto가 필요하다면 만들어야한다 를 고민에다가 문서작성하기
 
 feat fix docs
