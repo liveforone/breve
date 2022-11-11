@@ -10,6 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -18,6 +23,27 @@ public class BookmarkService {
     private final BookmarkRepository bookmarkRepository;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+
+    //== entity -> map id & title ==//
+    public Map<String, Object> entityToMap(List<Bookmark> bookmarkList) {
+        Map<String, Object> map = new HashMap<>();
+        List<Long> boardId = new ArrayList<>();
+        List<String> boardTitle = new ArrayList<>();
+
+        for (Bookmark bookmark : bookmarkList) {
+            boardId.add(bookmark.getBoard().getId());
+            boardTitle.add(bookmark.getBoard().getTitle());
+        }
+
+        map.put("boardId", boardId);
+        map.put("boardTitle", boardTitle);
+
+        return map;
+    }
+
+    public Map<String, Object> getBookmarkList(String email) {
+        return entityToMap(bookmarkRepository.findByUserEmail(email));
+    }
 
     @Transactional
     public void saveBookmark(String email, Long boardId) {
