@@ -88,46 +88,56 @@ updated comment - text raw, edit
 
 ## API 설계
 ### users
-* / - get
-* /user/signup - get/post
-* /user/login - get/post
-* /user/prohibition - get
-* /user/mypage - get
-* /user/profile/{nickname} - get
-* /user/nickname-post - post
-* /user/search - get, param : string nickname
-* /admin - get, auth : admin
-* /user/change-email - post
-* /user/change-password - post
-* /user/withdraw - post, body : string password
+```
+/ - get
+/user/signup - get/post
+/user/login - get/post
+/user/prohibition - get
+/user/mypage - get
+/user/profile/{nickname} - get
+/user/nickname-post - post
+/user/search - get, param : string nickname
+/admin - get, auth : admin
+*/user/change-email - post
+/user/change-password - post
+/user/withdraw - post, body : string password
+```
 ### board
-* /board/today - get
-* /board/best - get
-* /board/search - get, param : string keyword
-* /board/hashtag/{hashtag} - get
-* /board/post - get/post
-* /board/{id} - get
-* /board/image/{saveFileName} - get, file
-* /board/good/{id} - post
-* /board/edit/{id} - get/post
-* /board/delete/{id} - post
+```
+/board/today - get
+/board/best - get
+/board/search - get, param : string keyword
+/board/hashtag/{hashtag} - get
+/board/post - get/post
+/board/{id} - get
+/board/image/{saveFileName} - get, file
+/board/good/{id} - post
+/board/edit/{id} - get/post
+/board/delete/{id} - post
+```
 ### comment
-* /comment/{boardId} - get
-* /comment/post/{boardId} - post
-* /comment/edit/{id} - get/post
-* /comment/good/{id} - post
-* /comment/delete/{id} - post
+```
+/comment/{boardId} - get 
+/comment/post/{boardId} - post
+/comment/edit/{id} - get/post
+/comment/good/{id} - post
+/comment/delete/{id} - post
+```
 ### follow
-* /follow/{nickname} - post
-* /unfollow/{nickname} - post
-* /follow/my-follow - get
-* /follow/my-follower - get
-* /follow/profile-follow/{nickname} - get
-* /follow/profile-follower/{nickname} - get
+```
+/follow/{nickname} - post
+/unfollow/{nickname} - post
+/follow/my-follow - get
+/follow/my-follower - get
+/follow/profile-follow/{nickname} - get
+/follow/profile-follower/{nickname} - get
+```
 ### bookmark
-* /my-bookmark - get
-* /bookmark/post/{boardId} - post
-* /bookmark/cancel/{boardId} - post
+```
+/my-bookmark - get
+/bookmark/post/{boardId} - post
+/bookmark/cancel/{boardId} - post
+```
 
 # 3. 상세설명
 ## 게시판별 정렬 기준
