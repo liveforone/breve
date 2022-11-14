@@ -139,15 +139,15 @@ public class BoardController {
             @PathVariable("id") Long id,
             Principal principal
     ) {
-        BoardResponse board = boardService.getBoardDetail(id);
+        Board boardEntity = boardService.getBoardEntity(id);
 
-        if (board != null) {
+        if (boardEntity != null) {
             Map<String, Object> map = new HashMap<>();
-            String user = principal.getName();
-            String writerEmail = boardService.getBoardEntity(id).getUsers().getEmail();  //작성자 검증시 사용
-            String writerNickname = boardService.getBoardEntity(id).getUsers().getNickname();
+            BoardResponse board = boardService.entityToDtoDetail(boardEntity);
+            String writerEmail = boardEntity.getUsers().getEmail();
+            String writerNickname = boardEntity.getUsers().getNickname();
 
-            map.put("user", user);
+            map.put("user", principal.getName());
             map.put("writerEmail", writerEmail);
             map.put("writerNickname", writerNickname);
             map.put("body", board);
@@ -192,7 +192,7 @@ public class BoardController {
 
     @GetMapping("/board/edit/{id}")
     public ResponseEntity<?> boardEditPage(@PathVariable("id") Long id) {
-        BoardResponse board = boardService.getBoardDetail(id);
+        BoardResponse board = boardService.entityToDtoDetail(boardService.getBoardEntity(id));
 
         return ResponseEntity.ok(Objects.requireNonNullElse(board, "해당 게시글이 없어조회할 수 없습니다."));
     }

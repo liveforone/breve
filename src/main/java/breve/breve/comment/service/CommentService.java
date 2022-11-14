@@ -52,10 +52,6 @@ public class CommentService {
         return entityToDtoPage(commentRepository.findByBoardId(boardId, pageable));
     }
 
-    public CommentResponse getCommentDetail(Long id) {
-        return entityToDtoDetail(commentRepository.findOneById(id));
-    }
-
     public Comment getCommentEntity(Long id) {
         return commentRepository.findOneById(id);
     }

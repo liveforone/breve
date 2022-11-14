@@ -98,10 +98,6 @@ public class BoardService {
         return boardRepository.findOneById(id);
     }
 
-    public BoardResponse getBoardDetail(Long id) {
-        return entityToDtoDetail(boardRepository.findOneById(id));
-    }
-
     @Transactional
     public Long saveBoardNoFile(BoardRequest boardRequest, String writer) {
         Users users = userRepository.findByEmail(writer);

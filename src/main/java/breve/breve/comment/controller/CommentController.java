@@ -76,7 +76,7 @@ public class CommentController {
 
     @GetMapping("/comment/edit/{id}")
     public ResponseEntity<?> commentEditPage(@PathVariable("id") Long id) {
-        CommentResponse comment = commentService.getCommentDetail(id);
+        CommentResponse comment = commentService.entityToDtoDetail(commentService.getCommentEntity(id));
 
         return ResponseEntity.ok(Objects.requireNonNullElse(comment, "해당 댓글을 찾을 수 없습니다."));
     }

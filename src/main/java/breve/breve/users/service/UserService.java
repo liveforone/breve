@@ -102,6 +102,34 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    //== 유저 엔티티 반환 ==//
+    @Transactional(readOnly = true)
+    public Users getUserEntity(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    //== 유저 responsedto 반환 ==//
+    @Transactional(readOnly = true)
+    public UserResponse getUserByEmail(String email) {
+        return entityToDtoDetail(userRepository.findByEmail(email));
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponse> getUserListByNickName(String nickname) {
+        return entityToDtoList(userRepository.findSearchByNickName(nickname));
+    }
+
+    //== 전체 유저 리턴 for admin ==//
+    @Transactional(readOnly = true)
+    public List<Users> getAllUsersForAdmin() {
+        return userRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getUserByNickname(String nickname) {
+        return entityToDtoDetail(userRepository.findByNickname(nickname));
+    }
+
     //== 회원 가입 로직 ==//
     @Transactional
     public Long joinUser(UserRequest userRequest) {
@@ -158,34 +186,6 @@ public class UserService implements UserDetailsService {
         }
 
         return new User(users.getEmail(), users.getPassword(), authorities);
-    }
-
-    //== 유저 엔티티 반환 ==//
-    @Transactional(readOnly = true)
-    public Users getUserEntity(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    //== 유저 responsedto 반환 ==//
-    @Transactional(readOnly = true)
-    public UserResponse getUserByEmail(String email) {
-        return entityToDtoDetail(userRepository.findByEmail(email));
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserResponse> getUserListByNickName(String nickname) {
-        return entityToDtoList(userRepository.findSearchByNickName(nickname));
-    }
-
-    //== 전체 유저 리턴 for admin ==//
-    @Transactional(readOnly = true)
-    public List<Users> getAllUsersForAdmin() {
-        return userRepository.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public UserResponse getUserByNickname(String nickname) {
-        return entityToDtoDetail(userRepository.findByNickname(nickname));
     }
 
     @Transactional
