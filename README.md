@@ -98,7 +98,7 @@ updated comment - text raw, edit
 /user/nickname-post - post
 /user/search - get, param : string nickname
 /admin - get, auth : admin
-*/user/change-email - post
+/user/change-email - post
 /user/change-password - post
 /user/withdraw - post, body : string password
 ```
