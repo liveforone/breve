@@ -92,19 +92,25 @@ public class CommentController {
     ) {
         Comment comment = commentService.getCommentEntity(id);
 
-        if (Objects.equals(comment.getWriter(), principal.getName())) {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/comment/" + comment.getBoard().getId()));
+        if (comment != null) {
 
-            commentService.editComment(content, id);
-            log.info("댓글 수정 성공 !!");
+            if (Objects.equals(comment.getWriter(), principal.getName())) {
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.setLocation(URI.create("/comment/" + comment.getBoard().getId()));
 
-            return ResponseEntity
-                    .status(HttpStatus.MOVED_PERMANENTLY)
-                    .headers(httpHeaders)
-                    .build();
+                commentService.editComment(content, id);
+                log.info("댓글 수정 성공 !!");
+
+                return ResponseEntity
+                        .status(HttpStatus.MOVED_PERMANENTLY)
+                        .headers(httpHeaders)
+                        .build();
+            } else {
+                return ResponseEntity.ok("회원님이 댓글 작성자와 달라 수정할 수 없습니다.");
+            }
+
         } else {
-            return ResponseEntity.ok("회원님이 댓글 작성자와 달라 수정할 수 없습니다.");
+            return ResponseEntity.ok("해당 댓글이 없어 수정이 불가능합니다.");
         }
     }
 
