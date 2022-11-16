@@ -1,5 +1,6 @@
 package breve.breve.follow.controller;
 
+import breve.breve.follow.model.Follow;
 import breve.breve.follow.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,16 +28,22 @@ public class FollowController {
             @PathVariable("nickname") String nickname,
             Principal principal
     ) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/user/profile/" + nickname));
+        Follow follow = followService.getFollowDetail(principal.getName(), nickname);
 
-        followService.saveFollow(nickname, principal.getName());
-        log.info("팔로잉 성공!!");
+        if (follow == null) {  //중복안됨
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/user/profile/" + nickname));
 
-        return ResponseEntity
-                .status(HttpStatus.MOVED_PERMANENTLY)
-                .headers(httpHeaders)
-                .build();
+            followService.saveFollow(nickname, principal.getName());
+            log.info("팔로잉 성공!!");
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+        } else {
+            return ResponseEntity.ok("이미 팔로우 되어있습니다.");
+        }
     }
 
     @GetMapping("/follow/my-follow")
@@ -58,16 +65,22 @@ public class FollowController {
             @PathVariable("nickname") String nickname,
             Principal principal
     ) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/user/mypage"));
+        Follow follow = followService.getFollowDetail(principal.getName(), nickname);
 
-        followService.unfollow(principal.getName(), nickname);
-        log.info("언팔로우 성공!!");
+        if (follow != null) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/user/mypage"));
 
-        return ResponseEntity
-                .status(HttpStatus.MOVED_PERMANENTLY)
-                .headers(httpHeaders)
-                .build();
+            followService.unfollow(principal.getName(), nickname);
+            log.info("언팔로우 성공!!");
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+        } else {
+            return ResponseEntity.ok("이미 이웃이 아닙니다.");
+        }
     }
 
     @GetMapping("/follow/profile-follow/{nickname}")

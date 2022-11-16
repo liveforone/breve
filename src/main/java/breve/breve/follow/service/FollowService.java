@@ -67,6 +67,14 @@ public class FollowService {
         return list;
     }
 
+    //== follow detail ==//
+    public Follow getFollowDetail(String followerEmail, String userNickname) {
+        Users me = userRepository.findByEmail(followerEmail);  //나
+        Users myFollow = userRepository.findByNickname(userNickname);  //나의 팔로잉, 팔로잉 당하는 사람
+
+        return followRepository.findByFollowerAndUsers(me, myFollow);
+    }
+
     @Transactional
     public void saveFollow(String users, String follower) {
         Users user = userRepository.findByNickname(users);
