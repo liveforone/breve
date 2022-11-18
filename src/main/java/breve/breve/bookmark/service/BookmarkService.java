@@ -45,6 +45,13 @@ public class BookmarkService {
         return entityToMap(bookmarkRepository.findByUserEmail(email));
     }
 
+    public Bookmark getBookmarkDetail(Long boardId, String email) {
+        Board board = boardRepository.findOneById(boardId);
+        Users users = userRepository.findByEmail(email);
+
+        return bookmarkRepository.findOneBookmark(users, board);
+    }
+
     @Transactional
     public void saveBookmark(String email, Long boardId) {
         Users users = userRepository.findByEmail(email);
@@ -62,7 +69,7 @@ public class BookmarkService {
     public void bookmarkCancel(String email, Long boardId) {
         Users users = userRepository.findByEmail(email);
         Board board = boardRepository.findOneById(boardId);
-        Bookmark bookmark = bookmarkRepository.findUsersAndBoard(users, board);
+        Bookmark bookmark = bookmarkRepository.findOneBookmark(users, board);
 
         if (bookmark != null) {
             bookmarkRepository.deleteById(bookmark.getId());

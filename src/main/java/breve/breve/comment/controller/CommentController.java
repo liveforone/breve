@@ -58,20 +58,20 @@ public class CommentController {
             ) {
         Board board = boardService.getBoardEntity(boardId);
 
-        if (board != null) {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/comment/" + boardId));
-
-            commentService.saveComment(commentRequest, principal.getName(), boardId);
-            log.info("댓글 저장 성공!!");
-
-            return ResponseEntity
-                    .status(HttpStatus.MOVED_PERMANENTLY)
-                    .headers(httpHeaders)
-                    .build();
-        } else {
+        if (board == null) {
             return ResponseEntity.ok("해당 게시글이 없어 댓글작성이 불가능합니다.");
         }
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/comment/" + boardId));
+
+        commentService.saveComment(commentRequest, principal.getName(), boardId);
+        log.info("댓글 저장 성공!!");
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 
     @GetMapping("/comment/edit/{id}")
@@ -92,46 +92,44 @@ public class CommentController {
     ) {
         Comment comment = commentService.getCommentEntity(id);
 
-        if (comment != null) {
-
-            if (Objects.equals(comment.getWriter(), principal.getName())) {
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.setLocation(URI.create("/comment/" + comment.getBoard().getId()));
-
-                commentService.editComment(content, id);
-                log.info("댓글 수정 성공 !!");
-
-                return ResponseEntity
-                        .status(HttpStatus.MOVED_PERMANENTLY)
-                        .headers(httpHeaders)
-                        .build();
-            } else {
-                return ResponseEntity.ok("회원님이 댓글 작성자와 달라 수정할 수 없습니다.");
-            }
-
-        } else {
+        if (comment == null) {
             return ResponseEntity.ok("해당 댓글이 없어 수정이 불가능합니다.");
         }
+
+        if (!Objects.equals(comment.getWriter(), principal.getName())) {
+            return ResponseEntity.ok("회원님이 댓글 작성자와 달라 수정할 수 없습니다.");
+        }
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/comment/" + comment.getBoard().getId()));
+
+        commentService.editComment(content, id);
+        log.info("댓글 수정 성공 !!");
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 
     @PostMapping("/comment/good/{id}")
     public ResponseEntity<?> commentUpdateGood(@PathVariable("id") Long id) {
         Comment comment = commentService.getCommentEntity(id);
 
-        if (comment != null) {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/comment/" + comment.getBoard().getId()));
-
-            commentService.updateGood(id);
-            log.info("댓글 좋아요 업데이트 성공!!");
-
-            return ResponseEntity
-                    .status(HttpStatus.MOVED_PERMANENTLY)
-                    .headers(httpHeaders)
-                    .build();
-        } else {
+        if (comment == null) {
             return ResponseEntity.ok("해당 댓글이 없어 좋아요 반영이 불가능합니다.");
         }
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/comment/" + comment.getBoard().getId()));
+
+        commentService.updateGood(id);
+        log.info("댓글 좋아요 업데이트 성공!!");
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 
     @PostMapping("/comment/delete/{id}")
@@ -141,27 +139,25 @@ public class CommentController {
     ) {
         Comment comment = commentService.getCommentEntity(id);
 
-        if (comment != null) {
-
-            if (Objects.equals(comment.getWriter(), principal.getName())) {
-                Long boardId = comment.getBoard().getId();
-
-                commentService.deleteComment(id);
-                log.info("댓글 삭제완료 !!");
-
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.setLocation(URI.create("/comment/" + boardId));
-
-                return ResponseEntity
-                        .status(HttpStatus.MOVED_PERMANENTLY)
-                        .headers(httpHeaders)
-                        .build();
-            } else {
-                return ResponseEntity.ok("회원님과 작성자가 서로 달라 댓글 삭제가 불가능합니다.");
-            }
-
-        } else {
+        if (comment == null) {
             return ResponseEntity.ok("해당 게시글이 없어 삭제가 불가능합니다.");
         }
+
+        if (!Objects.equals(comment.getWriter(), principal.getName())) {
+            return ResponseEntity.ok("회원님과 작성자가 서로 달라 댓글 삭제가 불가능합니다.");
+        }
+
+        Long boardId = comment.getBoard().getId();
+
+        commentService.deleteComment(id);
+        log.info("댓글 삭제완료 !!");
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/comment/" + boardId));
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 }

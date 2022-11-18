@@ -30,20 +30,20 @@ public class FollowController {
     ) {
         Follow follow = followService.getFollowDetail(principal.getName(), nickname);
 
-        if (follow == null) {  //중복안됨
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/user/profile/" + nickname));
-
-            followService.saveFollow(nickname, principal.getName());
-            log.info("팔로잉 성공!!");
-
-            return ResponseEntity
-                    .status(HttpStatus.MOVED_PERMANENTLY)
-                    .headers(httpHeaders)
-                    .build();
-        } else {
+        if (follow != null) {  //중복 일때
             return ResponseEntity.ok("이미 팔로우 되어있습니다.");
         }
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/user/profile/" + nickname));
+
+        followService.saveFollow(nickname, principal.getName());
+        log.info("팔로잉 성공!!");
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 
     @GetMapping("/follow/my-follow")
@@ -67,20 +67,20 @@ public class FollowController {
     ) {
         Follow follow = followService.getFollowDetail(principal.getName(), nickname);
 
-        if (follow != null) {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/user/mypage"));
-
-            followService.unfollow(principal.getName(), nickname);
-            log.info("언팔로우 성공!!");
-
-            return ResponseEntity
-                    .status(HttpStatus.MOVED_PERMANENTLY)
-                    .headers(httpHeaders)
-                    .build();
-        } else {
+        if (follow == null) {
             return ResponseEntity.ok("이미 이웃이 아닙니다.");
         }
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/user/mypage"));
+
+        followService.unfollow(principal.getName(), nickname);
+        log.info("언팔로우 성공!!");
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 
     @GetMapping("/follow/profile-follow/{nickname}")

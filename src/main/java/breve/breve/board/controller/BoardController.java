@@ -106,18 +106,7 @@ public class BoardController {
             Principal principal
     ) throws IllegalStateException, IOException {
 
-        if (!uploadFile.isEmpty()) {  //파일 있는 게시글
-            Long boardId = boardService.saveBoardFile(boardRequest, uploadFile, principal.getName());
-            log.info("게시글 작성, 파일 저장 성공 !!");
-
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/board/" + boardId));
-
-            return ResponseEntity
-                    .status(HttpStatus.MOVED_PERMANENTLY)
-                    .headers(httpHeaders)
-                    .build();
-        } else {  //파일 없는 게시글
+        if (uploadFile.isEmpty()) {  //파일 없는 게시글
             Long boardId = boardService.saveBoardNoFile(boardRequest, principal.getName());
             log.info("게시글 작성 성공 !!");
 
@@ -129,6 +118,17 @@ public class BoardController {
                     .headers(httpHeaders)
                     .build();
         }
+
+        Long boardId = boardService.saveBoardFile(boardRequest, uploadFile, principal.getName());
+        log.info("게시글 작성, 파일 저장 성공 !!");
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/board/" + boardId));
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 
     /*
@@ -141,24 +141,24 @@ public class BoardController {
     ) {
         Board boardEntity = boardService.getBoardEntity(id);
 
-        if (boardEntity != null) {
-            Map<String, Object> map = new HashMap<>();
-            BoardResponse board = boardService.entityToDtoDetail(boardEntity);
-            String writerEmail = boardEntity.getUsers().getEmail();
-            String writerNickname = boardEntity.getUsers().getNickname();
-
-            map.put("user", principal.getName());
-            map.put("writerEmail", writerEmail);
-            map.put("writerNickname", writerNickname);
-            map.put("body", board);
-
-            boardService.updateView(id);
-            log.info("조회수 +1 성공!!");
-
-            return ResponseEntity.ok(map);
-        } else {
+        if (boardEntity == null) {
             return ResponseEntity.ok("해당 게시글이 없어 조회할 수 없습니다.");
         }
+
+        Map<String, Object> map = new HashMap<>();
+        BoardResponse board = boardService.entityToDtoDetail(boardEntity);
+        String writerEmail = boardEntity.getUsers().getEmail();
+        String writerNickname = boardEntity.getUsers().getNickname();
+
+        map.put("user", principal.getName());
+        map.put("writerEmail", writerEmail);
+        map.put("writerNickname", writerNickname);
+        map.put("body", board);
+
+        boardService.updateView(id);
+        log.info("조회수 +1 성공!!");
+
+        return ResponseEntity.ok(map);
     }
 
     //== 상품 상세조회 이미지 ==//
@@ -174,20 +174,20 @@ public class BoardController {
     public ResponseEntity<?> boardGood(@PathVariable("id") Long id) {
         Board board = boardService.getBoardEntity(id);
 
-        if (board != null) {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/board/" + id));
-
-            boardService.updateGood(id);
-            log.info("좋아요 반영 성공!!");
-
-            return ResponseEntity
-                    .status(HttpStatus.MOVED_PERMANENTLY)
-                    .headers(httpHeaders)
-                    .build();
-        } else {
+        if (board == null) {
             return ResponseEntity.ok("게시글이 존재하지 않아 좋아요가 불가능합니다.");
         }
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/board/" + id));
+
+        boardService.updateGood(id);
+        log.info("좋아요 반영 성공!!");
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 
     @GetMapping("/board/edit/{id}")
@@ -212,29 +212,36 @@ public class BoardController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(URI.create("/board/" + id));
 
-        String writer = boardService.getBoardEntity(id).getUsers().getEmail();
+        Board board = boardService.getBoardEntity(id);
 
-        if (Objects.equals(writer, principal.getName())) {  //작성자일 때
+        if (board == null) {
+            return ResponseEntity.ok("해당 게시글이 없어 수정이 불가능합니다.");
+        }
 
-            if (!uploadFile.isEmpty()) {  //파일이 있다면
-                boardService.editBoardFile(id, uploadFile, boardRequest);
-                log.info("게시글 id=" + id + " 수정 완료!!");
-            } else {  //파일이 없다면
-                boardService.editBoardNoFile(id, boardRequest);
-                log.info("게시글 id=" + id + " 수정 완료!!");
-            }
-
-            return ResponseEntity
-                    .status(HttpStatus.MOVED_PERMANENTLY)
-                    .headers(httpHeaders)
-                    .build();
-
-        } else {
+        if (!Objects.equals(board.getUsers().getEmail(), principal.getName())) {  //writer check
             log.info("작성자와 현재 유저가 달라 수정 불가능.");
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .build();
         }
+
+        if (uploadFile.isEmpty()) {
+            boardService.editBoardNoFile(id, boardRequest);
+            log.info("게시글 id=" + id + " 수정 완료!!");
+
+            return ResponseEntity
+                    .status(HttpStatus.MOVED_PERMANENTLY)
+                    .headers(httpHeaders)
+                    .build();
+        }
+
+        boardService.editBoardFile(id, uploadFile, boardRequest);
+        log.info("게시글 id=" + id + " 수정 완료!!");
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 
     @PostMapping("/board/delete/{id}")
@@ -242,24 +249,28 @@ public class BoardController {
             @PathVariable("id") Long id,
             Principal principal
     ) {
-        String writer = boardService.getBoardEntity(id).getUsers().getEmail();
-        
-        if (Objects.equals(writer, principal.getName())) {
-            boardService.deleteBoard(id);
-            log.info("게시글 id=" + id + " 삭제 완료!!");
+        Board board = boardService.getBoardEntity(id);
 
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/board/today"));
+        if (board == null) {
+            return ResponseEntity.ok("해당 게시글이 없어 삭제가 불가능합니다.");
+        }
 
-            return ResponseEntity
-                    .status(HttpStatus.MOVED_PERMANENTLY)
-                    .headers(httpHeaders)
-                    .build();
-        } else {
+        if (!Objects.equals(board.getUsers().getEmail(), principal.getName())) {
             log.info("작성자와 현재 유저가 달라 삭제 불가능.");
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .build();
         }
+
+        boardService.deleteBoard(id);
+        log.info("게시글 id=" + id + " 삭제 완료!!");
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/board/today"));
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .headers(httpHeaders)
+                .build();
     }
 }
