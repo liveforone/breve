@@ -39,9 +39,14 @@ public class BookmarkController {
             Principal principal
     ) {
         Board board = boardService.getBoardEntity(boardId);
+        Bookmark bookmark = bookmarkService.getBookmarkDetail(boardId, principal.getName());
 
         if (board == null) {
             return ResponseEntity.ok("게시글을 찾을 수 없어 북마킹이 불가능합니다.");
+        }
+
+        if (bookmark != null) {
+            return ResponseEntity.ok("이미 북마크 하였습니다.");
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -62,12 +67,11 @@ public class BookmarkController {
             Principal principal
     ) {
         Board board = boardService.getBoardEntity(boardId);
+        Bookmark bookmark = bookmarkService.getBookmarkDetail(boardId, principal.getName());
 
         if (board == null) {
             return ResponseEntity.ok("게시글을 찾을 수 없어 북마크 취소가 불가능합니다.");
         }
-
-        Bookmark bookmark = bookmarkService.getBookmarkDetail(boardId, principal.getName());
 
         if (bookmark == null) {
             return ResponseEntity.ok("해당 북마크는 이미 취소되었습니다.");
