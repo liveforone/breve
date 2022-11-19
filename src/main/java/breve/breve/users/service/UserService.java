@@ -33,16 +33,16 @@ public class UserService implements UserDetailsService {
     //== entity -> dto1 - detail ==//
     public UserResponse entityToDtoDetail(Users users) {
 
-        if (users != null) {
-            return UserResponse.builder()
-                    .id(users.getId())
-                    .email(users.getEmail())
-                    .auth(users.getAuth())
-                    .nickname(users.getNickname())
-                    .build();
-        } else {
+        if (users == null) {
             return null;
         }
+
+        return UserResponse.builder()
+                .id(users.getId())
+                .email(users.getEmail())
+                .auth(users.getAuth())
+                .nickname(users.getNickname())
+                .build();
     }
 
     //== entity -> dto2 - list ==//
@@ -166,9 +166,9 @@ public class UserService implements UserDetailsService {
             userRepository.updateAuth(Role.ADMIN, userRequest.getEmail());
         } else if (user.getAuth() == Role.ADMIN) {
             authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getValue()));
-        } else {
-            authorities.add(new SimpleGrantedAuthority(Role.MEMBER.getValue()));
         }
+        authorities.add(new SimpleGrantedAuthority(Role.MEMBER.getValue()));
+
         new User(user.getEmail(), user.getPassword(), authorities);
     }
 
@@ -181,9 +181,9 @@ public class UserService implements UserDetailsService {
 
         if (users.getAuth() == Role.ADMIN) {  //어드민 아이디 지정됨, 비밀번호는 회원가입해야함
             authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getValue()));
-        } else {
-            authorities.add(new SimpleGrantedAuthority(Role.MEMBER.getValue()));
         }
+
+        authorities.add(new SimpleGrantedAuthority(Role.MEMBER.getValue()));
 
         return new User(users.getEmail(), users.getPassword(), authorities);
     }
