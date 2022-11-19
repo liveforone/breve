@@ -35,17 +35,17 @@ public class CommentService {
     //== entity -> dto 편의메소드2 - 엔티티 하나 ==//
     public CommentResponse entityToDtoDetail(Comment comment) {
 
-        if (comment != null) {
-            return CommentResponse.builder()
-                    .id(comment.getId())
-                    .writer(comment.getWriter())
-                    .content(comment.getContent())
-                    .good(comment.getGood())
-                    .createdDate(comment.getCreatedDate())
-                    .build();
-        } else {
+        if (comment == null) {
             return null;
         }
+
+        return CommentResponse.builder()
+                .id(comment.getId())
+                .writer(comment.getWriter())
+                .content(comment.getContent())
+                .good(comment.getGood())
+                .createdDate(comment.getCreatedDate())
+                .build();
     }
 
     public Page<CommentResponse> getCommentList(Long boardId, Pageable pageable) {

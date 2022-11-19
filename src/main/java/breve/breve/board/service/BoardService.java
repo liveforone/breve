@@ -44,20 +44,20 @@ public class BoardService {
     //== entity -> dto 편의메소드2 - 엔티티 하나 ==//
     public BoardResponse entityToDtoDetail(Board board) {
 
-        if (board != null) {
-            return BoardResponse.builder()
-                    .id(board.getId())
-                    .title(board.getTitle())
-                    .content(board.getContent())
-                    .hashTag(board.getHashTag())
-                    .saveFileName(board.getSaveFileName())
-                    .view(board.getView())
-                    .good(board.getGood())
-                    .createdDate(board.getCreatedDate())
-                    .build();
-        } else {
+        if (board == null) {
             return null;
         }
+
+        return BoardResponse.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .hashTag(board.getHashTag())
+                .saveFileName(board.getSaveFileName())
+                .view(board.getView())
+                .good(board.getGood())
+                .createdDate(board.getCreatedDate())
+                .build();
     }
 
     public String fileSave(MultipartFile uploadFile) throws IOException {
