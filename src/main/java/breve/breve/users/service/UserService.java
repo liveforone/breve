@@ -30,13 +30,8 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    //== entity -> dto1 - detail ==//
-    public UserResponse entityToDtoDetail(Users users) {
-
-        if (users == null) {
-            return null;
-        }
-
+    //== UserResponse builder method ==//
+    public UserResponse dtoBuilder(Users users) {
         return UserResponse.builder()
                 .id(users.getId())
                 .email(users.getEmail())
@@ -45,18 +40,33 @@ public class UserService implements UserDetailsService {
                 .build();
     }
 
+    //== dto -> entity ==//
+    public Users dtoToEntity(UserRequest user) {
+        return Users.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .password(user.getPassword())
+                    .auth(user.getAuth())
+                    .nickname(user.getNickname())
+                    .build();
+    }
+
+    //== entity -> dto1 - detail ==//
+    public UserResponse entityToDtoDetail(Users users) {
+
+        if (users == null) {
+            return null;
+        }
+
+        return dtoBuilder(users);
+    }
+
     //== entity -> dto2 - list ==//
     public List<UserResponse> entityToDtoList(List<Users> usersList) {
         List<UserResponse> dto = new ArrayList<>();
 
         for (Users users : usersList) {
-            UserResponse userResponse = UserResponse.builder()
-                    .id(users.getId())
-                    .email(users.getEmail())
-                    .auth(users.getAuth())
-                    .nickname(users.getNickname())
-                    .build();
-            dto.add(userResponse);
+            dto.add(dtoBuilder(users));
         }
 
         return dto;
@@ -132,14 +142,14 @@ public class UserService implements UserDetailsService {
 
     //== 회원 가입 로직 ==//
     @Transactional
-    public Long joinUser(UserRequest userRequest) {
+    public void joinUser(UserRequest userRequest) {
         //비밀번호 암호화
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         userRequest.setAuth(Role.MEMBER);  //기본 권한 매핑
         userRequest.setNickname(makeRandomNickname());  //무작위 닉네임 생성
 
-        return userRepository.save(userRequest.toEntity()).getId();
+        userRepository.save(dtoToEntity(userRequest));
     }
 
     //== 로그인 - 세션과 컨텍스트홀더 사용 ==//

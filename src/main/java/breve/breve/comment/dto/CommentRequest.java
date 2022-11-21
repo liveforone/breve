@@ -14,14 +14,4 @@ public class CommentRequest {
     private String content;
     private Board board;
     private int good;
-
-    public Comment toEntity() {
-        return Comment.builder()
-                .id(id)
-                .writer(writer)
-                .content(content)
-                .board(board)
-                .good(good)
-                .build();
-    }
 }

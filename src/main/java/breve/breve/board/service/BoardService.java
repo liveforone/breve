@@ -26,28 +26,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
-    //== entity ->  dto 편의메소드1 - 페이징 형식 ==//
-    public Page<BoardResponse> entityToDtoPage(Page<Board> boardList) {
-        return boardList.map(m -> BoardResponse.builder()
-                .id(m.getId())
-                .title(m.getTitle())
-                .content(m.getContent())
-                .hashTag(m.getHashTag())
-                .saveFileName(m.getSaveFileName())
-                .view(m.getView())
-                .good(m.getGood())
-                .createdDate(m.getCreatedDate())
-                .build()
-        );
-    }
-
-    //== entity -> dto 편의메소드2 - 엔티티 하나 ==//
-    public BoardResponse entityToDtoDetail(Board board) {
-
-        if (board == null) {
-            return null;
-        }
-
+    //== BoardResponse builder method ==//
+    public BoardResponse dtoBuilder(Board board) {
         return BoardResponse.builder()
                 .id(board.getId())
                 .title(board.getTitle())
@@ -58,6 +38,35 @@ public class BoardService {
                 .good(board.getGood())
                 .createdDate(board.getCreatedDate())
                 .build();
+    }
+
+    //== dto -> entity ==//
+    public Board dtoToEntity(BoardRequest board) {
+        return Board.builder()
+                    .id(board.getId())
+                    .title(board.getTitle())
+                    .content(board.getContent())
+                    .users(board.getUsers())
+                    .hashTag(board.getHashTag())
+                    .saveFileName(board.getSaveFileName())
+                    .view(board.getView())
+                    .good(board.getGood())
+                    .build();
+    }
+
+    //== entity ->  dto 편의메소드1 - 페이징 형식 ==//
+    public Page<BoardResponse> entityToDtoPage(Page<Board> boardList) {
+        return boardList.map(this::dtoBuilder);
+    }
+
+    //== entity -> dto 편의메소드2 - 엔티티 하나 ==//
+    public BoardResponse entityToDtoDetail(Board board) {
+
+        if (board == null) {
+            return null;
+        }
+
+        return dtoBuilder(board);
     }
 
     public String fileSave(MultipartFile uploadFile) throws IOException {
@@ -104,7 +113,7 @@ public class BoardService {
 
         boardRequest.setUsers(users);
 
-        return boardRepository.save(boardRequest.toEntity()).getId();
+        return boardRepository.save(dtoToEntity(boardRequest)).getId();
     }
 
     @Transactional
@@ -115,7 +124,7 @@ public class BoardService {
         boardRequest.setUsers(users);
         boardRequest.setSaveFileName(saveFileName);
 
-        return boardRepository.save(boardRequest.toEntity()).getId();
+        return boardRepository.save(dtoToEntity(boardRequest)).getId();
     }
 
     @Transactional
@@ -140,7 +149,7 @@ public class BoardService {
         boardRequest.setSaveFileName(saveFileName);
         boardRequest.setHashTag(board.getHashTag());
 
-        boardRepository.save(boardRequest.toEntity());
+        boardRepository.save(dtoToEntity(boardRequest));
     }
 
     @Transactional
@@ -154,7 +163,7 @@ public class BoardService {
         boardRequest.setSaveFileName(board.getSaveFileName());  //파일이 원래 없던지, 파일을 수정 안헀던지
         boardRequest.setHashTag(board.getHashTag());
 
-        boardRepository.save(boardRequest.toEntity());
+        boardRepository.save(dtoToEntity(boardRequest));
     }
 
     @Transactional

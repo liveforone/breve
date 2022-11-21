@@ -17,17 +17,4 @@ public class BoardRequest {
     private String saveFileName;
     private int view;
     private int good;
-
-    public Board toEntity() {
-        return Board.builder()
-                .id(id)
-                .title(title)
-                .content(content)
-                .users(users)
-                .hashTag(hashTag)
-                .saveFileName(saveFileName)
-                .view(view)
-                .good(good)
-                .build();
-    }
 }
