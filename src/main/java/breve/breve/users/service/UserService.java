@@ -121,12 +121,16 @@ public class UserService implements UserDetailsService {
     //== 유저 responsedto 반환 ==//
     @Transactional(readOnly = true)
     public UserResponse getUserByEmail(String email) {
-        return entityToDtoDetail(userRepository.findByEmail(email));
+        return entityToDtoDetail(
+                userRepository.findByEmail(email)
+        );
     }
 
     @Transactional(readOnly = true)
     public List<UserResponse> getUserListByNickName(String nickname) {
-        return entityToDtoList(userRepository.searchByNickName(nickname));
+        return entityToDtoList(
+                userRepository.searchByNickName(nickname)
+        );
     }
 
     //== 전체 유저 리턴 for admin ==//

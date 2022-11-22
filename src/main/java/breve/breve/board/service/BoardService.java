@@ -78,29 +78,56 @@ public class BoardService {
     }
 
     public Page<BoardResponse> getBoardPaging(Pageable pageable) {
-        return entityToDtoPage(boardRepository.findAllBoard(pageable));
+        return entityToDtoPage(
+                boardRepository.findAllBoard(pageable)
+        );
     }
 
     public Page<BoardResponse> getTodayBoard(Pageable pageable) {
         LocalDate now = LocalDate.now();
 
-        return entityToDtoPage(boardRepository.findBoardByCreatedDate(now, pageable));
+        return entityToDtoPage(
+                boardRepository.findBoardByCreatedDate(
+                        now,
+                        pageable
+                )
+        );
     }
 
     public Page<BoardResponse> getSearchBoard(String keyword, Pageable pageable) {
-        return entityToDtoPage(boardRepository.searchByTitle(keyword, pageable));
+        return entityToDtoPage(
+                boardRepository.searchByTitle(
+                        keyword,
+                        pageable
+                )
+        );
     }
 
     public Page<BoardResponse> getBoardByHashTag(String hashTag, Pageable pageable) {
-        return entityToDtoPage(boardRepository.findBoardByHashTag(hashTag, pageable));
+        return entityToDtoPage(
+                boardRepository.findBoardByHashTag(
+                        hashTag,
+                        pageable
+                )
+        );
     }
 
     public Page<BoardResponse> getBoardByUser(String writer, Pageable pageable) {
-        return entityToDtoPage(boardRepository.findBoardByWriter(writer, pageable));
+        return entityToDtoPage(
+                boardRepository.findBoardByWriter(
+                        writer,
+                        pageable
+                )
+        );
     }
 
     public Page<BoardResponse> getBoardByNickname(String nickname, Pageable pageable) {
-        return entityToDtoPage(boardRepository.findBoardByNickname(nickname, pageable));
+        return entityToDtoPage(
+                boardRepository.findBoardByNickname(
+                        nickname,
+                        pageable
+                )
+        );
     }
 
     public Board getBoardEntity(Long id) {
