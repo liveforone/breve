@@ -71,7 +71,9 @@ public class CommentService {
         commentRequest.setWriter(writer);
         commentRequest.setBoard(board);
 
-        commentRepository.save(dtoToEntity(commentRequest));
+        commentRepository.save(
+                dtoToEntity(commentRequest)
+        );
     }
 
     @Transactional

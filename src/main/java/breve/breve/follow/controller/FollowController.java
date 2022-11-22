@@ -35,9 +35,14 @@ public class FollowController {
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/user/profile/" + nickname));
+        httpHeaders.setLocation(URI.create(
+                "/user/profile/" + nickname
+        ));
 
-        followService.saveFollow(nickname, principal.getName());
+        followService.saveFollow(
+                nickname,
+                principal.getName()
+        );
         log.info("팔로잉 성공!!");
 
         return ResponseEntity
@@ -48,14 +53,16 @@ public class FollowController {
 
     @GetMapping("/follow/my-follow")
     public ResponseEntity<List<String>> myFollowList(Principal principal) {
-        List<String> myFollowList = followService.getMyFollowList(principal.getName());
+        List<String> myFollowList =
+                followService.getMyFollowList(principal.getName());
 
         return ResponseEntity.ok(myFollowList);
     }
 
     @GetMapping("/follow/my-follower")
     public ResponseEntity<List<String>> myFollowerList(Principal principal) {
-        List<String> myFollowerList = followService.getMyFollowerList(principal.getName());
+        List<String> myFollowerList =
+                followService.getMyFollowerList(principal.getName());
 
         return ResponseEntity.ok(myFollowerList);
     }
@@ -65,16 +72,22 @@ public class FollowController {
             @PathVariable("nickname") String nickname,
             Principal principal
     ) {
-        Follow follow = followService.getFollowDetail(principal.getName(), nickname);
+        Follow follow =
+                followService.getFollowDetail(principal.getName(), nickname);
 
         if (follow == null) {
             return ResponseEntity.ok("이미 이웃이 아닙니다.");
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/user/mypage"));
+        httpHeaders.setLocation(URI.create(
+                "/user/my-page"
+        ));
 
-        followService.unfollow(principal.getName(), nickname);
+        followService.unfollow(
+                principal.getName(),
+                nickname
+        );
         log.info("언팔로우 성공!!");
 
         return ResponseEntity
@@ -84,14 +97,18 @@ public class FollowController {
     }
 
     @GetMapping("/follow/profile-follow/{nickname}")
-    public ResponseEntity<List<String>> profileFollow(@PathVariable("nickname") String nickname) {
+    public ResponseEntity<List<String>> profileFollow(
+            @PathVariable("nickname") String nickname
+    ) {
         List<String> followList = followService.getProfileFollowList(nickname);
 
         return ResponseEntity.ok(followList);
     }
 
     @GetMapping("/follow/profile-follower/{nickname}")
-    public ResponseEntity<List<String>> profileFollower(@PathVariable("nickname") String nickname) {
+    public ResponseEntity<List<String>> profileFollower(
+            @PathVariable("nickname") String nickname
+    ) {
         List<String> followerList = followService.getProfileFollowerList(nickname);
 
         return ResponseEntity.ok(followerList);

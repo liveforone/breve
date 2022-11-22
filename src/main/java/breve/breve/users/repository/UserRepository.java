@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     Users findByNickname(@Param("nickname") String nickname);
 
     @Query("select u from Users u where u.nickname like %:nickname%")
-    List<Users> findSearchByNickName(@Param("nickname") String nickname);
+    List<Users> searchByNickName(@Param("nickname") String nickname);
 
     //== 권한 업데이트 ==//
     @Modifying

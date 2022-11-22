@@ -50,7 +50,7 @@ public class UserController {
     //== 회원가입 처리 ==//
     @PostMapping("/user/signup")
     public ResponseEntity<?> signup(@RequestBody UserRequest userRequest) {
-        int checkEmail = userService.checkSameEmail(userRequest.getEmail());
+        int checkEmail = userService.checkDuplicateEmail(userRequest.getEmail());
 
         if (checkEmail != 1) {  //중복일때
             return ResponseEntity
@@ -87,7 +87,10 @@ public class UserController {
             return ResponseEntity.ok("해당 이메일의 회원은 존재하지 않습니다.");
         }
 
-        int checkPassword = userService.passwordDecode(userRequest.getPassword(), users.getPassword());
+        int checkPassword = userService.checkPasswordMatching(
+                userRequest.getPassword(),
+                users.getPassword()
+        );
 
         if (checkPassword != 1) {  //PW check
             return ResponseEntity.ok("비밀번호가 일치하지 않습니다.");
@@ -96,7 +99,10 @@ public class UserController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(URI.create("/"));
 
-        userService.login(userRequest, session);
+        userService.login(
+                userRequest,
+                session
+        );
         log.info("로그인 성공!");
 
         return ResponseEntity
@@ -119,7 +125,7 @@ public class UserController {
                 .body("접근 권한이 없습니다.");
     }
 
-    @GetMapping("/user/mypage")  //rest-api에서는 대문자를 쓰지않는다.
+    @GetMapping("/user/my-page")  //rest-api에서는 대문자를 쓰지않는다.
     public ResponseEntity<?> myPage(
             @PageableDefault(page = 0, size = 10)
             @SortDefault.SortDefaults({
@@ -135,7 +141,10 @@ public class UserController {
         }
 
         Map<String, Object> map = new HashMap<>();
-        Page<BoardResponse> board = boardService.getBoardByUser(principal.getName(), pageable);
+        Page<BoardResponse> board = boardService.getBoardByUser(
+                principal.getName(),
+                pageable
+        );
 
         map.put("users", users);
         map.put("board", board);
@@ -159,7 +168,8 @@ public class UserController {
         }
 
         Map<String, Object> map = new HashMap<>();
-        Page<BoardResponse> board = boardService.getBoardByNickname(nickname, pageable);
+        Page<BoardResponse> board =
+                boardService.getBoardByNickname(nickname, pageable);
 
         map.put("users", users);
         map.put("board", board);
@@ -173,7 +183,7 @@ public class UserController {
             @RequestBody String nickname,
             Principal principal
     ) {
-        int checkNickname = userService.checkSameNickname(nickname);
+        int checkNickname = userService.checkDuplicateNickname(nickname);
 
         if (checkNickname != 1) {  //이메일 중복 check
             return ResponseEntity
@@ -181,9 +191,14 @@ public class UserController {
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/user/mypage"));
+        httpHeaders.setLocation(URI.create(
+                "/user/my-page"
+        ));
 
-        userService.updateNickname(nickname, principal.getName());
+        userService.updateNickname(
+                nickname,
+                principal.getName()
+        );
         log.info("닉네임 수정 성공!!");
 
         return ResponseEntity
@@ -209,7 +224,9 @@ public class UserController {
 
         if (!users.getAuth().equals(Role.ADMIN)) {  //권한 검증 - auth = admin check
             log.info("어드민 페이지 접속에 실패했습니다.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .build();
         }
 
         log.info("어드민이 어드민 페이지에 접속했습니다.");
@@ -226,14 +243,18 @@ public class UserController {
         UserResponse changeEmail = userService.getUserByEmail(userRequest.getEmail());
 
         if (users == null) {
-            return ResponseEntity.ok("해당 유저를 조회할 수 없어 이메일 변경이 불가능합니다.");
+            return ResponseEntity
+                    .ok("해당 유저를 조회할 수 없어 이메일 변경이 불가능합니다.");
         }
 
         if (changeEmail != null) {  //이메일 중복 check
             return ResponseEntity.ok("해당 이메일이 이미 존재합니다. 다시 입력해주세요");
         }
 
-        int checkPassword = userService.passwordDecode(userRequest.getPassword(), users.getPassword());
+        int checkPassword = userService.checkPasswordMatching(
+                userRequest.getPassword(),
+                users.getPassword()
+        );
 
         if (checkPassword != 1) {  //PW check
             log.info("비밀번호 일치하지 않음.");
@@ -241,9 +262,14 @@ public class UserController {
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/user/logout"));
+        httpHeaders.setLocation(URI.create(
+                "/user/logout"
+        ));
 
-        userService.updateEmail(principal.getName(), userRequest.getEmail());
+        userService.updateEmail(
+                principal.getName(),
+                userRequest.getEmail()
+        );
         log.info("이메일 변경 성공!!");
 
         return ResponseEntity
@@ -261,10 +287,14 @@ public class UserController {
         Users users = userService.getUserEntity(principal.getName());
 
         if (users == null) {
-            return ResponseEntity.ok("해당 유저를 조회할 수 없어 비밀번호 변경이 불가능합니다.");
+            return ResponseEntity
+                    .ok("해당 유저를 조회할 수 없어 비밀번호 변경이 불가능합니다.");
         }
 
-        int checkPassword = userService.passwordDecode(userRequest.getOldPassword(), users.getPassword());
+        int checkPassword = userService.checkPasswordMatching(
+                userRequest.getOldPassword(),
+                users.getPassword()
+        );
 
         if (checkPassword != 1) {  //PW check
             log.info("비밀번호 일치하지 않음.");
@@ -272,9 +302,14 @@ public class UserController {
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/user/logout"));
+        httpHeaders.setLocation(URI.create(
+                "/user/logout"
+        ));
 
-        userService.updatePassword(users.getId(), userRequest.getNewPassword());
+        userService.updatePassword(
+                users.getId(),
+                userRequest.getNewPassword()
+        );
         log.info("비밀번호 변경 성공!!");
 
         return ResponseEntity
@@ -295,7 +330,8 @@ public class UserController {
             return ResponseEntity.ok("해당 유저를 조회할 수 없어 탈퇴가 불가능합니다.");
         }
 
-        int checkPassword = userService.passwordDecode(password, users.getPassword());
+        int checkPassword =
+                userService.checkPasswordMatching(password, users.getPassword());
 
         if (checkPassword != 1) {  //PW check
             log.info("비밀번호 일치하지 않음.");

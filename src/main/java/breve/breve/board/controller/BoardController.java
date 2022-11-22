@@ -107,11 +107,16 @@ public class BoardController {
     ) throws IllegalStateException, IOException {
 
         if (uploadFile.isEmpty()) {  //파일 없는 게시글
-            Long boardId = boardService.saveBoardNoFile(boardRequest, principal.getName());
+            Long boardId = boardService.saveBoardNoFile(
+                    boardRequest,
+                    principal.getName()
+            );
             log.info("게시글 작성 성공 !!");
 
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/board/" + boardId));
+            httpHeaders.setLocation(URI.create(
+                    "/board/" + boardId
+            ));
 
             return ResponseEntity
                     .status(HttpStatus.MOVED_PERMANENTLY)
@@ -119,11 +124,17 @@ public class BoardController {
                     .build();
         }
 
-        Long boardId = boardService.saveBoardFile(boardRequest, uploadFile, principal.getName());
+        Long boardId = boardService.saveBoardFile(
+                boardRequest,
+                uploadFile,
+                principal.getName()
+        );
         log.info("게시글 작성, 파일 저장 성공 !!");
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/board/" + boardId));
+        httpHeaders.setLocation(URI.create(
+                "/board/" + boardId
+        ));
 
         return ResponseEntity
                 .status(HttpStatus.MOVED_PERMANENTLY)
@@ -179,7 +190,9 @@ public class BoardController {
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/board/" + id));
+        httpHeaders.setLocation(URI.create(
+                "/board/" + id
+        ));
 
         boardService.updateGood(id);
         log.info("좋아요 반영 성공!!");
@@ -194,7 +207,12 @@ public class BoardController {
     public ResponseEntity<?> boardEditPage(@PathVariable("id") Long id) {
         BoardResponse board = boardService.entityToDtoDetail(boardService.getBoardEntity(id));
 
-        return ResponseEntity.ok(Objects.requireNonNullElse(board, "해당 게시글이 없어조회할 수 없습니다."));
+        return ResponseEntity.ok(
+                Objects.requireNonNullElse(
+                        board,
+                        "해당 게시글이 없어조회할 수 없습니다."
+                )
+        );
     }
 
     /*
@@ -209,8 +227,11 @@ public class BoardController {
             @RequestPart("boardRequest") BoardRequest boardRequest,
             Principal principal
     ) throws IllegalStateException, IOException {
+
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/board/" + id));
+        httpHeaders.setLocation(URI.create(
+                "/board/" + id
+        ));
 
         Board board = boardService.getBoardEntity(id);
 
@@ -226,7 +247,10 @@ public class BoardController {
         }
 
         if (uploadFile.isEmpty()) {
-            boardService.editBoardNoFile(id, boardRequest);
+            boardService.editBoardNoFile(
+                    id,
+                    boardRequest
+            );
             log.info("게시글 id=" + id + " 수정 완료!!");
 
             return ResponseEntity
@@ -235,7 +259,12 @@ public class BoardController {
                     .build();
         }
 
-        boardService.editBoardFile(id, uploadFile, boardRequest);
+        boardService.editBoardFile(
+                id,
+                uploadFile,
+                boardRequest
+
+        );
         log.info("게시글 id=" + id + " 수정 완료!!");
 
         return ResponseEntity
@@ -266,7 +295,9 @@ public class BoardController {
         log.info("게시글 id=" + id + " 삭제 완료!!");
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/board/today"));
+        httpHeaders.setLocation(URI.create(
+                "/board/today"
+        ));
 
         return ResponseEntity
                 .status(HttpStatus.MOVED_PERMANENTLY)

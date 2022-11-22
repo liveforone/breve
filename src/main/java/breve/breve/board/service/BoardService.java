@@ -88,7 +88,7 @@ public class BoardService {
     }
 
     public Page<BoardResponse> getSearchBoard(String keyword, Pageable pageable) {
-        return entityToDtoPage(boardRepository.findSearchByTitle(keyword, pageable));
+        return entityToDtoPage(boardRepository.searchByTitle(keyword, pageable));
     }
 
     public Page<BoardResponse> getBoardByHashTag(String hashTag, Pageable pageable) {
@@ -113,18 +113,24 @@ public class BoardService {
 
         boardRequest.setUsers(users);
 
-        return boardRepository.save(dtoToEntity(boardRequest)).getId();
+        return boardRepository.save(
+                dtoToEntity(boardRequest)).getId();
     }
 
     @Transactional
-    public Long saveBoardFile(BoardRequest boardRequest, MultipartFile uploadFile, String writer) throws IOException {
+    public Long saveBoardFile(
+            BoardRequest boardRequest,
+            MultipartFile uploadFile,
+            String writer
+    ) throws IOException {
         Users users = userRepository.findByEmail(writer);
 
         String saveFileName = fileSave(uploadFile);
         boardRequest.setUsers(users);
         boardRequest.setSaveFileName(saveFileName);
 
-        return boardRepository.save(dtoToEntity(boardRequest)).getId();
+        return boardRepository.save(
+                dtoToEntity(boardRequest)).getId();
     }
 
     @Transactional
@@ -149,7 +155,9 @@ public class BoardService {
         boardRequest.setSaveFileName(saveFileName);
         boardRequest.setHashTag(board.getHashTag());
 
-        boardRepository.save(dtoToEntity(boardRequest));
+        boardRepository.save(
+                dtoToEntity(boardRequest)
+        );
     }
 
     @Transactional
@@ -163,7 +171,9 @@ public class BoardService {
         boardRequest.setSaveFileName(board.getSaveFileName());  //파일이 원래 없던지, 파일을 수정 안헀던지
         boardRequest.setHashTag(board.getHashTag());
 
-        boardRepository.save(dtoToEntity(boardRequest));
+        boardRepository.save(
+                dtoToEntity(boardRequest)
+        );
     }
 
     @Transactional

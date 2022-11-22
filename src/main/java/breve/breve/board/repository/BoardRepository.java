@@ -19,7 +19,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Page<Board> findBoardByCreatedDate(@Param("createdDate") LocalDate createdDate, Pageable pageable);
 
     @Query("select b from Board b join b.users where b.title like %:title%")
-    Page<Board> findSearchByTitle(@Param("title") String keyword, Pageable pageable);
+    Page<Board> searchByTitle(@Param("title") String keyword, Pageable pageable);
 
     @Query("select b from Board b join b.users where b.hashTag = :hashTag")
     Page<Board> findBoardByHashTag(@Param("hashTag") String hashTag, Pageable pageable);

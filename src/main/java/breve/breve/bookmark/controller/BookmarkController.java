@@ -28,7 +28,8 @@ public class BookmarkController {
 
     @GetMapping("/my-bookmark")
     public ResponseEntity<Map<String, Object>> myBookmark(Principal principal) {
-        Map<String, Object> bookmarkList = bookmarkService.getBookmarkList(principal.getName());
+        Map<String, Object> bookmarkList =
+                bookmarkService.getBookmarkList(principal.getName());
 
         return ResponseEntity.ok(bookmarkList);
     }
@@ -39,7 +40,10 @@ public class BookmarkController {
             Principal principal
     ) {
         Board board = boardService.getBoardEntity(boardId);
-        Bookmark bookmark = bookmarkService.getBookmarkDetail(boardId, principal.getName());
+        Bookmark bookmark = bookmarkService.getBookmarkDetail(
+                boardId,
+                principal.getName()
+        );
 
         if (board == null) {
             return ResponseEntity.ok("게시글을 찾을 수 없어 북마킹이 불가능합니다.");
@@ -50,9 +54,14 @@ public class BookmarkController {
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/board/" + boardId));
+        httpHeaders.setLocation(URI.create(
+                "/board/" + boardId
+        ));
 
-        bookmarkService.saveBookmark(principal.getName(), boardId);
+        bookmarkService.saveBookmark(
+                principal.getName(),
+                boardId
+        );
         log.info("북마킹 성공!!");
 
         return ResponseEntity
@@ -67,7 +76,10 @@ public class BookmarkController {
             Principal principal
     ) {
         Board board = boardService.getBoardEntity(boardId);
-        Bookmark bookmark = bookmarkService.getBookmarkDetail(boardId, principal.getName());
+        Bookmark bookmark = bookmarkService.getBookmarkDetail(
+                boardId,
+                principal.getName()
+        );
 
         if (board == null) {
             return ResponseEntity.ok("게시글을 찾을 수 없어 북마크 취소가 불가능합니다.");
@@ -78,9 +90,14 @@ public class BookmarkController {
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/board/" + boardId));
+        httpHeaders.setLocation(URI.create(
+                "/board/" + boardId
+        ));
 
-        bookmarkService.bookmarkCancel(principal.getName(), boardId);
+        bookmarkService.cancelBookmark(
+                principal.getName(),
+                boardId
+        );
         log.info("북마크 삭제 성공!!");
 
         return ResponseEntity

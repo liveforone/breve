@@ -66,7 +66,7 @@ public class BookmarkService {
     }
 
     @Transactional
-    public void bookmarkCancel(String email, Long boardId) {
+    public void cancelBookmark(String email, Long boardId) {
         Users users = userRepository.findByEmail(email);
         Board board = boardRepository.findOneById(boardId);
         Bookmark bookmark = bookmarkRepository.findOneBookmark(users, board);

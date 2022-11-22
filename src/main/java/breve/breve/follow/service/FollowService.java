@@ -72,7 +72,10 @@ public class FollowService {
         Users me = userRepository.findByEmail(followerEmail);  //나
         Users myFollow = userRepository.findByNickname(userNickname);  //나의 팔로잉, 팔로잉 당하는 사람
 
-        return followRepository.findOneFollow(me, myFollow);
+        return followRepository.findOneFollow(
+                me,
+                myFollow
+        );
     }
 
     @Transactional
@@ -93,7 +96,10 @@ public class FollowService {
         Users user_me = userRepository.findByEmail(follower);  //나
         Users user_follow = userRepository.findByNickname(users);  //내가 팔로우하는 사람
 
-        Follow follow = followRepository.findOneFollow(user_me, user_follow);
+        Follow follow = followRepository.findOneFollow(
+                user_me,
+                user_follow
+        );
         followRepository.deleteById(follow.getId());
     }
 }
