@@ -93,7 +93,7 @@ updated comment - text raw, edit
 /user/signup - get/post
 /user/login - get/post
 /user/prohibition - get
-/user/mypage - get
+/user/my-page - get
 /user/profile/{nickname} - get
 /user/nickname-post - post
 /user/search - get, param : string nickname
@@ -255,3 +255,4 @@ updated comment - text raw, edit
 * and query 네이밍 수정 -> findOne엔티티이름
 * dto -> entity 메소드 서비스로직으로 이동 후 서비스 로직에서 처리
 * 반복되는 entity -> dto builder 를 함수화 해서 불필요한 반복을 줄임.
+* 긴함수와 긴 변수는 줄바꿈하여 가독성을 올렸다.
