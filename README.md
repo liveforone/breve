@@ -256,3 +256,4 @@ updated comment - text raw, edit
 * dto -> entity 메소드 서비스로직으로 이동 후 서비스 로직에서 처리
 * 반복되는 entity -> dto builder 를 함수화 해서 불필요한 반복을 줄임.
 * [긴함수나 변수 줄바꿈으로 가독성 향상](https://github.com/liveforone/study/blob/main/GoodCode/%EC%A4%84%EB%B0%94%EA%BF%88%EC%9C%BC%EB%A1%9C%20%EA%B0%80%EB%8F%85%EC%84%B1%20%ED%96%A5%EC%83%81.md)
+* 상수로 매직넘버 대체하여 가독성 향상
