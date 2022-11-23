@@ -53,7 +53,6 @@ public class CommentService {
         if (comment == null) {
             return null;
         }
-
         return dtoBuilder(comment);
     }
 
@@ -71,7 +70,11 @@ public class CommentService {
     }
 
     @Transactional
-    public void saveComment(CommentRequest commentRequest, String writer, Long boardId) {
+    public void saveComment(
+            CommentRequest commentRequest,
+            String writer,
+            Long boardId
+    ) {
         Board board = boardRepository.findOneById(boardId);
         commentRequest.setWriter(writer);
         commentRequest.setBoard(board);

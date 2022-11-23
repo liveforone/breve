@@ -30,6 +30,11 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    public final static int DUPLICATE = 0;
+    public final static int NOT_DUPLICATE = 1;
+    public final static int PASSWORD_MATCH = 1;
+    public final static int PASSWORD_NOT_MATCH = 0;
+
     //== UserResponse builder method ==//
     public UserResponse dtoBuilder(Users users) {
         return UserResponse.builder()
@@ -57,7 +62,6 @@ public class UserService implements UserDetailsService {
         if (users == null) {
             return null;
         }
-
         return dtoBuilder(users);
     }
 
@@ -83,10 +87,9 @@ public class UserService implements UserDetailsService {
         Users users = userRepository.findByEmail(email);
 
         if (users == null) {
-            return 1;
-        } else {
-            return 0;
+            return NOT_DUPLICATE;
         }
+        return DUPLICATE;
     }
 
     //== 닉네임 중복 검증 ==//
@@ -95,10 +98,9 @@ public class UserService implements UserDetailsService {
         Users users = userRepository.findByNickname(nickname);
 
         if (users == null) {
-            return 1;
-        } else {
-            return 0;
+            return NOT_DUPLICATE;
         }
+        return DUPLICATE;
     }
 
     //== 비밀번호 복호화 ==//
@@ -106,10 +108,9 @@ public class UserService implements UserDetailsService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         if(encoder.matches(inputPassword, password)) {
-            return 1;
-        } else {
-            return 0;
+            return PASSWORD_MATCH;
         }
+        return PASSWORD_NOT_MATCH;
     }
 
     //== 유저 엔티티 반환 ==//
@@ -118,7 +119,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    //== 유저 responsedto 반환 ==//
+    //== 유저 response 반환 ==//
     @Transactional(readOnly = true)
     public UserResponse getUserByEmail(String email) {
         return entityToDtoDetail(
@@ -182,9 +183,9 @@ public class UserService implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         /*
-        처음 어드민이 로그인을 하는경우 이메일로 판별해서 권한을 admin으로 변경해주고
+        처음 어드민이 로그인을 하는경우 이메일로 판별해서 권한을 admin 으로 변경해주고
         그 다음부터 어드민이 업데이트 할때에는 auth 칼럼으로 판별해서 db 업데이트 하지않고,
-        grandtedauthority 만 업데이트 해준다.
+        GrantedAuthority 만 업데이트 해준다.
          */
         if (user.getAuth() != Role.ADMIN && ("admin@breve.com").equals(email)) {
             authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getValue()));

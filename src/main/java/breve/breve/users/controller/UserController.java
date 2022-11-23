@@ -35,13 +35,14 @@ public class UserController {
     private final UserService userService;
     private final BoardService boardService;
 
-    //== 메인 페이지 ==//
+    public final static int NOT_DUPLICATE = 1;
+    public final static int PASSWORD_MATCH = 1;
+
     @GetMapping("/")
     public ResponseEntity<?> home() {
         return ResponseEntity.ok("home");
     }
 
-    //== 회원가입 페이지 ==//
     @GetMapping("/user/signup")
     public ResponseEntity<?> signupPage() {
         return ResponseEntity.ok("회원가입페이지");
@@ -52,13 +53,13 @@ public class UserController {
     public ResponseEntity<?> signup(@RequestBody UserRequest userRequest) {
         int checkEmail = userService.checkDuplicateEmail(userRequest.getEmail());
 
-        if (checkEmail != 1) {  //중복일때
+        if (checkEmail != NOT_DUPLICATE) {
             return ResponseEntity
                     .ok("중복되는 이메일이 있어 회원가입이 불가능합니다.");
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/"));  //해당 경로로 리다이렉트
+        httpHeaders.setLocation(URI.create("/"));
 
         userService.joinUser(userRequest);
         log.info("회원 가입 성공!!");
@@ -92,7 +93,7 @@ public class UserController {
                 users.getPassword()
         );
 
-        if (checkPassword != 1) {  //PW check
+        if (checkPassword != PASSWORD_MATCH) {
             return ResponseEntity.ok("비밀번호가 일치하지 않습니다.");
         }
 
@@ -125,7 +126,7 @@ public class UserController {
                 .body("접근 권한이 없습니다.");
     }
 
-    @GetMapping("/user/my-page")  //rest-api에서는 대문자를 쓰지않는다.
+    @GetMapping("/user/my-page")  //rest-api 에서는 대문자를 쓰지않는다.
     public ResponseEntity<?> myPage(
             @PageableDefault(page = 0, size = 10)
             @SortDefault.SortDefaults({
@@ -185,7 +186,7 @@ public class UserController {
     ) {
         int checkNickname = userService.checkDuplicateNickname(nickname);
 
-        if (checkNickname != 1) {  //이메일 중복 check
+        if (checkNickname != NOT_DUPLICATE) {  //이메일 중복 check
             return ResponseEntity
                     .ok("중복되는 닉네임이 있어 수정 불가능합니다.");
         }
@@ -247,7 +248,7 @@ public class UserController {
                     .ok("해당 유저를 조회할 수 없어 이메일 변경이 불가능합니다.");
         }
 
-        if (changeEmail != null) {  //이메일 중복 check
+        if (changeEmail != null) {
             return ResponseEntity.ok("해당 이메일이 이미 존재합니다. 다시 입력해주세요");
         }
 
@@ -256,7 +257,7 @@ public class UserController {
                 users.getPassword()
         );
 
-        if (checkPassword != 1) {  //PW check
+        if (checkPassword != PASSWORD_MATCH) {  //PW check
             log.info("비밀번호 일치하지 않음.");
             return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
         }
@@ -283,7 +284,7 @@ public class UserController {
     public ResponseEntity<?> changePassword(
             @RequestBody UserChangePasswordRequest userRequest,
             Principal principal
-            ) {
+    ) {
         Users users = userService.getUserEntity(principal.getName());
 
         if (users == null) {
@@ -296,7 +297,7 @@ public class UserController {
                 users.getPassword()
         );
 
-        if (checkPassword != 1) {  //PW check
+        if (checkPassword != PASSWORD_MATCH) {
             log.info("비밀번호 일치하지 않음.");
             return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
         }
@@ -333,7 +334,7 @@ public class UserController {
         int checkPassword =
                 userService.checkPasswordMatching(password, users.getPassword());
 
-        if (checkPassword != 1) {  //PW check
+        if (checkPassword != PASSWORD_MATCH) {
             log.info("비밀번호 일치하지 않음.");
             return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
         }

@@ -65,7 +65,6 @@ public class BoardService {
         if (board == null) {
             return null;
         }
-
         return dtoBuilder(board);
     }
 
@@ -171,7 +170,11 @@ public class BoardService {
     }
 
     @Transactional
-    public void editBoardFile(Long id, MultipartFile uploadFile, BoardRequest boardRequest) throws IOException {
+    public void editBoardFile(
+            Long id,
+            MultipartFile uploadFile,
+            BoardRequest boardRequest
+    ) throws IOException {
         Board board = boardRepository.findOneById(id);
         String saveFileName = fileSave(uploadFile);
 

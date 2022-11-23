@@ -56,7 +56,7 @@ public class CommentController {
             @PathVariable("boardId") Long boardId,
             @RequestBody CommentRequest commentRequest,
             Principal principal
-            ) {
+    ) {
         Board board = boardService.getBoardEntity(boardId);
 
         if (board == null) {
