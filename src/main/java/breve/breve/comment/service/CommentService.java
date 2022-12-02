@@ -6,6 +6,7 @@ import breve.breve.comment.dto.CommentRequest;
 import breve.breve.comment.dto.CommentResponse;
 import breve.breve.comment.model.Comment;
 import breve.breve.comment.repository.CommentRepository;
+import breve.breve.utility.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +51,7 @@ public class CommentService {
     //== entity -> dto 편의메소드2 - 엔티티 하나 ==//
     public CommentResponse entityToDtoDetail(Comment comment) {
 
-        if (comment == null) {
+        if (CommonUtils.isNull(comment)) {
             return null;
         }
         return dtoBuilder(comment);

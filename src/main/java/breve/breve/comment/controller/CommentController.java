@@ -6,6 +6,7 @@ import breve.breve.comment.dto.CommentRequest;
 import breve.breve.comment.dto.CommentResponse;
 import breve.breve.comment.model.Comment;
 import breve.breve.comment.service.CommentService;
+import breve.breve.utility.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -59,7 +60,7 @@ public class CommentController {
     ) {
         Board board = boardService.getBoardEntity(boardId);
 
-        if (board == null) {
+        if (CommonUtils.isNull(board)) {
             return ResponseEntity.ok("해당 게시글이 없어 댓글작성이 불가능합니다.");
         }
 
@@ -105,7 +106,7 @@ public class CommentController {
     ) {
         Comment comment = commentService.getCommentEntity(id);
 
-        if (comment == null) {
+        if (CommonUtils.isNull(comment)) {
             return ResponseEntity.ok("해당 댓글이 없어 수정이 불가능합니다.");
         }
 
@@ -135,7 +136,7 @@ public class CommentController {
     public ResponseEntity<?> commentUpdateGood(@PathVariable("id") Long id) {
         Comment comment = commentService.getCommentEntity(id);
 
-        if (comment == null) {
+        if (CommonUtils.isNull(comment)) {
             return ResponseEntity.ok("해당 댓글이 없어 좋아요 반영이 불가능합니다.");
         }
 
@@ -160,7 +161,7 @@ public class CommentController {
     ) {
         Comment comment = commentService.getCommentEntity(id);
 
-        if (comment == null) {
+        if (CommonUtils.isNull(comment)) {
             return ResponseEntity.ok("해당 게시글이 없어 삭제가 불가능합니다.");
         }
 

@@ -4,6 +4,7 @@ import breve.breve.board.model.Board;
 import breve.breve.board.service.BoardService;
 import breve.breve.bookmark.model.Bookmark;
 import breve.breve.bookmark.service.BookmarkService;
+import breve.breve.utility.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -45,11 +46,11 @@ public class BookmarkController {
                 principal.getName()
         );
 
-        if (board == null) {
+        if (CommonUtils.isNull(board)) {
             return ResponseEntity.ok("게시글을 찾을 수 없어 북마킹이 불가능합니다.");
         }
 
-        if (bookmark != null) {
+        if (!CommonUtils.isNull(bookmark)) {
             return ResponseEntity.ok("이미 북마크 하였습니다.");
         }
 
@@ -81,11 +82,11 @@ public class BookmarkController {
                 principal.getName()
         );
 
-        if (board == null) {
+        if (CommonUtils.isNull(board)) {
             return ResponseEntity.ok("게시글을 찾을 수 없어 북마크 취소가 불가능합니다.");
         }
 
-        if (bookmark == null) {
+        if (CommonUtils.isNull(bookmark)) {
             return ResponseEntity.ok("해당 북마크는 이미 취소되었습니다.");
         }
 

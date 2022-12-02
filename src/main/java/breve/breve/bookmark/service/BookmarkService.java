@@ -6,6 +6,7 @@ import breve.breve.bookmark.model.Bookmark;
 import breve.breve.bookmark.repository.BookmarkRepository;
 import breve.breve.users.model.Users;
 import breve.breve.users.repository.UserRepository;
+import breve.breve.utility.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,7 +74,7 @@ public class BookmarkService {
         Board board = boardRepository.findOneById(boardId);
         Bookmark bookmark = bookmarkRepository.findOneBookmark(users, board);
 
-        if (bookmark != null) {
+        if (!CommonUtils.isNull(bookmark)) {
             bookmarkRepository.deleteById(bookmark.getId());
         }
     }

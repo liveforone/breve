@@ -8,6 +8,7 @@ import breve.breve.users.dto.UserRequest;
 import breve.breve.users.dto.UserResponse;
 import breve.breve.users.model.*;
 import breve.breve.users.service.UserService;
+import breve.breve.utility.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,8 +36,8 @@ public class UserController {
     private final UserService userService;
     private final BoardService boardService;
 
-    public static final int NOT_DUPLICATE = 1;
-    public static final int PASSWORD_MATCH = 1;
+    private static final int NOT_DUPLICATE = 1;
+    private static final int PASSWORD_MATCH = 1;
 
     @GetMapping("/")
     public ResponseEntity<?> home() {
@@ -84,7 +85,7 @@ public class UserController {
     ) {
         Users users = userService.getUserEntity(userRequest.getEmail());
 
-        if (users == null) {  //회원 존재 check
+        if (CommonUtils.isNull(users)) {  //회원 존재 check
             return ResponseEntity.ok("해당 이메일의 회원은 존재하지 않습니다.");
         }
 
@@ -136,7 +137,7 @@ public class UserController {
     ) {
         UserResponse users = userService.getUserByEmail(principal.getName());
 
-        if (users == null) {
+        if (CommonUtils.isNull(users)) {
             return ResponseEntity.ok("해당 유저가 없어 조회할 수 없습니다.");
 
         }
@@ -164,7 +165,7 @@ public class UserController {
     ) {
         UserResponse users = userService.getUserByNickname(nickname);
 
-        if (users == null) {
+        if (CommonUtils.isNull(users)) {
             return ResponseEntity.ok("해당 유저가 없어 조회할 수 없습니다.");
         }
 
@@ -210,10 +211,14 @@ public class UserController {
 
     //== 닉네임으로 유저 검색 ==//
     @GetMapping("/user/search")
-    public ResponseEntity<List<UserResponse>> searchPage(
+    public ResponseEntity<?> searchPage(
             @RequestParam("nickname") String nickname
     ) {
         List<UserResponse> userList = userService.getUserListByNickName(nickname);
+
+        if (CommonUtils.isNull(userList)) {
+            return ResponseEntity.ok("해당 닉네임의 회원이 존재하지 않습니다.");
+        }
 
         return ResponseEntity.ok(userList);
     }
@@ -243,12 +248,12 @@ public class UserController {
         Users users = userService.getUserEntity(principal.getName());
         UserResponse changeEmail = userService.getUserByEmail(userRequest.getEmail());
 
-        if (users == null) {
+        if (CommonUtils.isNull(users)) {
             return ResponseEntity
                     .ok("해당 유저를 조회할 수 없어 이메일 변경이 불가능합니다.");
         }
 
-        if (changeEmail != null) {
+        if (!CommonUtils.isNull(changeEmail)) {
             return ResponseEntity.ok("해당 이메일이 이미 존재합니다. 다시 입력해주세요");
         }
 
@@ -287,7 +292,7 @@ public class UserController {
     ) {
         Users users = userService.getUserEntity(principal.getName());
 
-        if (users == null) {
+        if (CommonUtils.isNull(users)) {
             return ResponseEntity
                     .ok("해당 유저를 조회할 수 없어 비밀번호 변경이 불가능합니다.");
         }
@@ -327,7 +332,7 @@ public class UserController {
     ) {
         Users users = userService.getUserEntity(principal.getName());
 
-        if (users == null) {
+        if (CommonUtils.isNull(users)) {
             return ResponseEntity.ok("해당 유저를 조회할 수 없어 탈퇴가 불가능합니다.");
         }
 

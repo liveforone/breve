@@ -4,6 +4,7 @@ import breve.breve.board.dto.BoardRequest;
 import breve.breve.board.dto.BoardResponse;
 import breve.breve.board.model.Board;
 import breve.breve.board.service.BoardService;
+import breve.breve.utility.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -152,7 +153,7 @@ public class BoardController {
     ) {
         Board boardEntity = boardService.getBoardEntity(id);
 
-        if (boardEntity == null) {
+        if (CommonUtils.isNull(boardEntity)) {
             return ResponseEntity.ok("해당 게시글이 없어 조회할 수 없습니다.");
         }
 
@@ -185,7 +186,7 @@ public class BoardController {
     public ResponseEntity<?> boardGood(@PathVariable("id") Long id) {
         Board board = boardService.getBoardEntity(id);
 
-        if (board == null) {
+        if (CommonUtils.isNull(board)) {
             return ResponseEntity.ok("게시글이 존재하지 않아 좋아요가 불가능합니다.");
         }
 
@@ -235,7 +236,7 @@ public class BoardController {
 
         Board board = boardService.getBoardEntity(id);
 
-        if (board == null) {
+        if (CommonUtils.isNull(board)) {
             return ResponseEntity.ok("해당 게시글이 없어 수정이 불가능합니다.");
         }
 
@@ -280,7 +281,7 @@ public class BoardController {
     ) {
         Board board = boardService.getBoardEntity(id);
 
-        if (board == null) {
+        if (CommonUtils.isNull(board)) {
             return ResponseEntity.ok("해당 게시글이 없어 삭제가 불가능합니다.");
         }
 

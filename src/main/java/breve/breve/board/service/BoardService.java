@@ -6,6 +6,7 @@ import breve.breve.board.dto.BoardResponse;
 import breve.breve.board.repository.BoardRepository;
 import breve.breve.users.model.Users;
 import breve.breve.users.repository.UserRepository;
+import breve.breve.utility.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +63,7 @@ public class BoardService {
     //== entity -> dto 편의메소드2 - 엔티티 하나 ==//
     public BoardResponse entityToDtoDetail(Board board) {
 
-        if (board == null) {
+        if (CommonUtils.isNull(board)) {
             return null;
         }
         return dtoBuilder(board);

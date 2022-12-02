@@ -5,6 +5,7 @@ import breve.breve.users.dto.UserRequest;
 import breve.breve.users.dto.UserResponse;
 import breve.breve.users.model.Users;
 import breve.breve.users.repository.UserRepository;
+import breve.breve.utility.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,10 +31,10 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public static final int DUPLICATE = 0;
-    public static final int NOT_DUPLICATE = 1;
-    public static final int PASSWORD_MATCH = 1;
-    public static final int PASSWORD_NOT_MATCH = 0;
+    private static final int DUPLICATE = 0;
+    private static final int NOT_DUPLICATE = 1;
+    private static final int PASSWORD_MATCH = 1;
+    private static final int PASSWORD_NOT_MATCH = 0;
 
     //== UserResponse builder method ==//
     public UserResponse dtoBuilder(Users users) {
@@ -59,7 +60,7 @@ public class UserService implements UserDetailsService {
     //== entity -> dto1 - detail ==//
     public UserResponse entityToDtoDetail(Users users) {
 
-        if (users == null) {
+        if (CommonUtils.isNull(users)) {
             return null;
         }
         return dtoBuilder(users);
@@ -86,7 +87,7 @@ public class UserService implements UserDetailsService {
     public int checkDuplicateEmail(String email) {
         Users users = userRepository.findByEmail(email);
 
-        if (users == null) {
+        if (CommonUtils.isNull(users)) {
             return NOT_DUPLICATE;
         }
         return DUPLICATE;
@@ -97,7 +98,7 @@ public class UserService implements UserDetailsService {
     public int checkDuplicateNickname(String nickname) {
         Users users = userRepository.findByNickname(nickname);
 
-        if (users == null) {
+        if (CommonUtils.isNull(users)) {
             return NOT_DUPLICATE;
         }
         return DUPLICATE;
@@ -168,7 +169,6 @@ public class UserService implements UserDetailsService {
     public void login(UserRequest userRequest, HttpSession httpSession)
             throws UsernameNotFoundException
     {
-
         String email = userRequest.getEmail();
         String password = userRequest.getPassword();
         Users user = userRepository.findByEmail(email);
@@ -190,7 +190,8 @@ public class UserService implements UserDetailsService {
         if (user.getAuth() != Role.ADMIN && ("admin@breve.com").equals(email)) {
             authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getValue()));
             userRepository.updateAuth(Role.ADMIN, userRequest.getEmail());
-        } else if (user.getAuth() == Role.ADMIN) {
+        }
+        if (user.getAuth() == Role.ADMIN) {
             authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getValue()));
         }
         authorities.add(new SimpleGrantedAuthority(Role.MEMBER.getValue()));
