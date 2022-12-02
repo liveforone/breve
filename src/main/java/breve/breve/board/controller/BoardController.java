@@ -114,10 +114,8 @@ public class BoardController {
             );
             log.info("게시글 작성 성공 !!");
 
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create(
-                    "/board/" + boardId
-            ));
+            String url = "/board/" + boardId;
+            HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
             return ResponseEntity
                     .status(HttpStatus.MOVED_PERMANENTLY)
@@ -132,10 +130,8 @@ public class BoardController {
         );
         log.info("게시글 작성, 파일 저장 성공 !!");
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(
-                "/board/" + boardId
-        ));
+        String url = "/board/" + boardId;
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         return ResponseEntity
                 .status(HttpStatus.MOVED_PERMANENTLY)
@@ -190,10 +186,8 @@ public class BoardController {
             return ResponseEntity.ok("게시글이 존재하지 않아 좋아요가 불가능합니다.");
         }
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(
-                "/board/" + id
-        ));
+        String url = "/board/" + id;
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         boardService.updateGood(id);
         log.info("좋아요 반영 성공!!");
@@ -229,10 +223,8 @@ public class BoardController {
             Principal principal
     ) throws IllegalStateException, IOException {
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(
-                "/board/" + id
-        ));
+        String url = "/board/" + id;
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         Board board = boardService.getBoardEntity(id);
 
@@ -295,10 +287,8 @@ public class BoardController {
         boardService.deleteBoard(id);
         log.info("게시글 id=" + id + " 삭제 완료!!");
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(
-                "/board/today"
-        ));
+        String url = "/board/today";
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         return ResponseEntity
                 .status(HttpStatus.MOVED_PERMANENTLY)

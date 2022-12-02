@@ -59,8 +59,8 @@ public class UserController {
                     .ok("중복되는 이메일이 있어 회원가입이 불가능합니다.");
         }
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/"));
+        String url = "/";
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         userService.joinUser(userRequest);
         log.info("회원 가입 성공!!");
@@ -98,8 +98,8 @@ public class UserController {
             return ResponseEntity.ok("비밀번호가 일치하지 않습니다.");
         }
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("/"));
+        String url = "/";
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         userService.login(
                 userRequest,
@@ -192,10 +192,8 @@ public class UserController {
                     .ok("중복되는 닉네임이 있어 수정 불가능합니다.");
         }
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(
-                "/user/my-page"
-        ));
+        String url = "/user/my-page";
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         userService.updateNickname(
                 nickname,
@@ -267,10 +265,8 @@ public class UserController {
             return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
         }
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(
-                "/user/logout"
-        ));
+        String url = "/user/logout";
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         userService.updateEmail(
                 principal.getName(),
@@ -307,10 +303,8 @@ public class UserController {
             return ResponseEntity.ok("비밀번호가 다릅니다. 다시 입력해주세요.");
         }
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(
-                "/user/logout"
-        ));
+        String url = "/user/logout";
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         userService.updatePassword(
                 users.getId(),

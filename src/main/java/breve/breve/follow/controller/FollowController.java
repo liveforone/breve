@@ -88,10 +88,8 @@ public class FollowController {
             return ResponseEntity.ok("이미 이웃이 아닙니다.");
         }
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(
-                "/user/my-page"
-        ));
+        String url = "/user/my-page";
+        HttpHeaders httpHeaders = CommonUtils.makeHeader(url);
 
         followService.unfollow(
                 principal.getName(),
