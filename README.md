@@ -258,3 +258,4 @@ updated comment - text raw, edit
 * [긴함수나 변수 줄바꿈으로 가독성 향상](https://github.com/liveforone/study/blob/main/GoodCode/%EC%A4%84%EB%B0%94%EA%BF%88%EC%9C%BC%EB%A1%9C%20%EA%B0%80%EB%8F%85%EC%84%B1%20%ED%96%A5%EC%83%81.md)
 * 상수로 매직넘버 대체하여 가독성 향상
 * 널체크는 util 클래스를 만들고 커스텀 함수인 isNull()을 이용해 처리하는 것으로 전면 수정함.
+* HttpHeaders 축약 함수로 가독성 및 중복코드 제거함.
