@@ -47,11 +47,12 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())  //provider 등록
                 .authorizeRequests()
                 // 페이지 권한 설정
-                .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/").permitAll()
-                .antMatchers("/board").authenticated()
+                .antMatchers("/user/signup").permitAll()
+                .antMatchers("/user/login").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/board/post").hasRole("MEMBER")
-                .antMatchers("/mypage").authenticated()
+                .anyRequest().authenticated()
                 .and() // 로그아웃 설정
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
