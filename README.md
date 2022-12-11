@@ -269,3 +269,4 @@ updated comment - text raw, edit
 * 널체크는 util 클래스를 만들고 커스텀 함수인 isNull()을 이용해 처리하는 것으로 전면 수정함.
 * HttpHeaders 축약 함수로 가독성 및 중복코드 제거함.
 * 스타일 가이드 추가함.
+* 향상된 for문을 람다식 for-each 문으로 변환하여 가독성 향상
