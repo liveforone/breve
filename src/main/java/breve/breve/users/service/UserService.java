@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,13 +69,7 @@ public class UserService implements UserDetailsService {
 
     //== entity -> dto2 - list ==//
     public List<UserResponse> entityToDtoList(List<Users> usersList) {
-        List<UserResponse> dto = new ArrayList<>();
-
-        for (Users users : usersList) {
-            dto.add(dtoBuilder(users));
-        }
-
-        return dto;
+        return usersList.stream().map(this::dtoBuilder).collect(Collectors.toList());
     }
 
     //== 무작위 닉네임 생성 - 숫자 + 문자 ==//

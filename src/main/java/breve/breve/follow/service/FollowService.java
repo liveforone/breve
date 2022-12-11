@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,49 +23,25 @@ public class FollowService {
     //== 내가 팔로우하는 사람들 ==//
     public List<String> getMyFollowList(String email) {
         List<Follow> followList = followRepository.findByFollower(email);
-        List<String> list = new ArrayList<>();
-
-        for (Follow follow : followList) {
-            list.add(follow.getUsers().getNickname());
-        }
-
-        return list;
+        return followList.stream().map(follow -> follow.getUsers().getNickname()).collect(Collectors.toList());
     }
 
     //== 나를 팔로우하는 사람들 ==//
     public List<String> getMyFollowerList(String email) {
         List<Follow> followerList = followRepository.findByUsers(email);
-        List<String> list = new ArrayList<>();
-
-        for (Follow follow : followerList) {
-            list.add(follow.getFollower().getNickname());
-        }
-
-        return list;
+        return followerList.stream().map(follow -> follow.getFollower().getNickname()).collect(Collectors.toList());
     }
 
     //== 프로필 - 프로필 주인이 팔로우하는 사람들 ==//
     public List<String> getProfileFollowList(String nickname) {
         List<Follow> followList = followRepository.findByFollowerNickname(nickname);
-        List<String> list = new ArrayList<>();
-
-        for (Follow follow : followList) {
-            list.add(follow.getUsers().getNickname());
-        }
-
-        return list;
+        return followList.stream().map(follow -> follow.getUsers().getNickname()).collect(Collectors.toList());
     }
 
     //== 프로필 - 프로필 주인을 팔로우하는 사람들 ==//
     public List<String> getProfileFollowerList(String nickname) {
         List<Follow> followerList = followRepository.findByUsersNickname(nickname);
-        List<String> list = new ArrayList<>();
-
-        for (Follow follow : followerList) {
-            list.add(follow.getFollower().getNickname());
-        }
-
-        return list;
+        return followerList.stream().map(follow -> follow.getFollower().getNickname()).collect(Collectors.toList());
     }
 
     //== follow detail ==//
