@@ -1,12 +1,12 @@
 package breve.breve.board.dto;
 
-import breve.breve.board.model.Board;
 import breve.breve.users.model.Users;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoardRequest {
 
     private Long id;

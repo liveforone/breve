@@ -1,12 +1,12 @@
 package breve.breve.comment.dto;
 
 import breve.breve.board.model.Board;
-import breve.breve.comment.model.Comment;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentRequest {
 
     private Long id;

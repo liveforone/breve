@@ -200,7 +200,8 @@ public class BoardController {
 
     @GetMapping("/board/edit/{id}")
     public ResponseEntity<?> boardEditPage(@PathVariable("id") Long id) {
-        BoardResponse board = boardService.entityToDtoDetail(boardService.getBoardEntity(id));
+        BoardResponse board =
+                boardService.entityToDtoDetail(boardService.getBoardEntity(id));
 
         return ResponseEntity.ok(
                 Objects.requireNonNullElse(

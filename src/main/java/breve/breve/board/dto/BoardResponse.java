@@ -1,13 +1,16 @@
 package breve.breve.board.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BoardResponse {
 
@@ -19,16 +22,4 @@ public class BoardResponse {
     private int view;
     private int good;
     private LocalDate createdDate;
-
-    @Builder
-    public BoardResponse(Long id, String title, String content, String hashTag, String saveFileName, int view, int good, LocalDate createdDate) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.hashTag = hashTag;
-        this.saveFileName = saveFileName;
-        this.view = view;
-        this.good = good;
-        this.createdDate = createdDate;
-    }
 }
